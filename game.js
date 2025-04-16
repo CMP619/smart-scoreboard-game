@@ -69,24 +69,28 @@ function checkCollision(obj1, obj2) {
 // Game Logic
 function createInvaders() {
     invaders = [];
-    const invaderTypes = ['invader01', 'invader02', 'invader03'];
-    const rows = [3, 2, 1];  // Number of rows for each type
+    const invaderTypes = [
+        { type: 'invader01', rows: 2 },
+        { type: 'invader02', rows: 2 },
+        { type: 'invader03', rows: 2 }
+    ];
     
-    let yOffset = 50;  // Start position from top
+    let yOffset = 50;
     
-    for(let typeIndex = 0; typeIndex < invaderTypes.length; typeIndex++) {
-        const invaderType = invaderTypes[typeIndex];
-        for (let row = 0; row < rows[typeIndex]; row++) {
+    for(const { type, rows } of invaderTypes) {
+        const config = INVADER_CONFIGS[type];  // Move config inside the loop
+        
+        for (let row = 0; row < rows; row++) {
             for (let col = 0; col < INVADER_PER_ROW; col++) {
-                const invaderWidth = ASSETS[invaderType].width * MODEL_SCALE;
-                const invaderHeight = ASSETS[invaderType].height * MODEL_SCALE;
-                const x = col * (invaderWidth + INVADER_PADDING) + 50;  // Add left margin
+                const invaderWidth = config.width * MODEL_SCALE;
+                const invaderHeight = config.height * MODEL_SCALE;
+                const x = col * (invaderWidth + INVADER_PADDING) + 50;
                 const y = row * (invaderHeight + INVADER_PADDING) + yOffset;
                 
-                invaders.push(new Invader(x, y, ASSETS[invaderType].src));
+                invaders.push(new Invader(x, y, type));
             }
-            yOffset += 10;  // Extra spacing between types
         }
+        yOffset += (config.height * MODEL_SCALE + INVADER_PADDING) * rows + 10;
     }
     
     invaderDirection = 1;
@@ -128,7 +132,7 @@ function updateInvaders() {
         invader.velocity.x = INVADER_SPEED * invaderDirection;
         invader.update();
         
-        if (Math.random() < INVADER_FIRE_RATE) {
+        if (Math.random() < invader.config.fireRate) {
             invader.fire();
         }
     });
@@ -154,7 +158,7 @@ function updateBullets() {
                 if (checkCollision(bullet, invader)) {
                     bullet.markedForDeletion = true;
                     invader.markedForDeletion = true;
-                    score += 10;
+                    score += invader.config.score;
                     scoreElement.textContent = score;
                 }
             });

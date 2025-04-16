@@ -97,7 +97,9 @@ h2 {
 
 .game-container {
     border: 2px solid lime;
-    display: none;  /* Add this line */
+    display: none;
+    width: 800px; /* Match GAME_WIDTH */
+    margin: 0 auto; /* Center the container */
 }
 
 .ui-container {
@@ -105,5 +107,5 @@ h2 {
     flex-direction: row;
     justify-content: space-between;
     align-items: stretch;
-    margin: 10px;
+    padding: 10px 20px; /* Replace margin with padding */
 }

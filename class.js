@@ -91,10 +91,16 @@ class Player extends GameObject {
 }
 
 class Invader extends GameObject {
-    constructor(x, y, imageSrc) {
-        const invaderWidth = 48 * MODEL_SCALE;
-        const invaderHeight = 32 * MODEL_SCALE;
-        super(x, y, invaderWidth, invaderHeight, imageSrc);
+    constructor(x, y, type) {
+        const config = INVADER_CONFIGS[type];
+        super(
+            x, y,
+            config.width * MODEL_SCALE,
+            config.height * MODEL_SCALE,
+            config.src
+        );
+        this.type = type;
+        this.config = config;
         this.velocity.x = INVADER_SPEED * invaderDirection;
         this.markedForDeletion = false;
     }
@@ -105,9 +111,11 @@ class Invader extends GameObject {
 
     fire() {
         const bullet = new Bullet(
-            this.position.x + (this.width / 2) - (BULLET_WIDTH / 2),
+            this.position.x + (this.width / 2) - (this.config.bulletSize.width / 2),
             this.position.y + this.height,
-            0, BULLET_SPEED
+            0, BULLET_SPEED,
+            this.config.bulletSize.width,
+            this.config.bulletSize.height
         );
         
         bullet.isEnemy = true;
@@ -116,8 +124,8 @@ class Invader extends GameObject {
 }
 
 class Bullet extends GameObject {
-    constructor(x, y, velocityX, velocityY) {
-        super(x, y, BULLET_WIDTH, BULLET_HEIGHT);
+    constructor(x, y, velocityX, velocityY, width = BULLET_WIDTH, height = BULLET_HEIGHT) {
+        super(x, y, width, height);
         this.velocity.x = velocityX;
         this.velocity.y = velocityY;
         this.isEnemy = false;

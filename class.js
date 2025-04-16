@@ -48,8 +48,8 @@ class GameObject {
 
 class Player extends GameObject {
     constructor(imageSrc) {
-        const playerWidth = ASSETS.player01.width * MODEL_SCALE;
-        const playerHeight = ASSETS.player01.height * MODEL_SCALE;
+        const playerWidth = 64 * MODEL_SCALE;
+        const playerHeight = 32 * MODEL_SCALE;
         super(
             GAME_WIDTH / 2 - playerWidth / 2,
             GAME_HEIGHT - playerHeight - PLAYER_OFFSET,
@@ -92,8 +92,8 @@ class Player extends GameObject {
 
 class Invader extends GameObject {
     constructor(x, y, imageSrc) {
-        const invaderWidth = imageSrc.width * MODEL_SCALE;
-        const invaderHeight = imageSrc.height * MODEL_SCALE;
+        const invaderWidth = 48 * MODEL_SCALE;
+        const invaderHeight = 32 * MODEL_SCALE;
         super(x, y, invaderWidth, invaderHeight, imageSrc);
         this.velocity.x = INVADER_SPEED * invaderDirection;
         this.markedForDeletion = false;

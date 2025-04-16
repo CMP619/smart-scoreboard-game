@@ -4,7 +4,7 @@ let lives = 3;
 let gameRunning = false;
 let invaderDirection = 1;
 let invadersDescending = false;
-let player = new Player(ASSETS.player01.src);
+let player = null;
 let invaders = [];
 let bullets = [];
 let keys = {
@@ -93,6 +93,8 @@ function createInvaders() {
 }
 
 function updateInvaders() {
+    if (!gameRunning) return;
+    
     let reachedEdge = false;
     
     invaders.forEach(invader => {
@@ -101,26 +103,33 @@ function updateInvaders() {
             reachedEdge = true;
         }
         
-        if (Math.random() < INVADER_FIRE_RATE) {
-            invader.fire();
+        // Check if invader reached player level
+        if (invader.position.y + invader.height >= player.position.y) {
+            gameOver();
+            return;
         }
     });
+    
+    // Only continue if game is still running
+    if (!gameRunning) return;
     
     if (reachedEdge) {
         invaderDirection *= -1;
         invadersDescending = true;
         invadersMoveDownTimer = 0;
+        
+        // Move all invaders down by a fixed amount
+        invaders.forEach(invader => {
+            invader.position.y += 20; // Fixed descent amount
+        });
     }
     
     invaders.forEach(invader => {
-        if (invadersDescending) {
-            invader.position.y += invader.height;
-        }
         invader.velocity.x = INVADER_SPEED * invaderDirection;
         invader.update();
         
-        if (invader.position.y + invader.height > player.position.y) {
-            gameOver();
+        if (Math.random() < INVADER_FIRE_RATE) {
+            invader.fire();
         }
     });
     
@@ -132,6 +141,11 @@ function updateInvaders() {
 }
 
 function updateBullets() {
+    // Remove bullets that are off screen
+    bullets = bullets.filter(bullet => {
+        return bullet.position.y > 0 && bullet.position.y < GAME_HEIGHT;
+    });
+    
     bullets.forEach(bullet => {
         bullet.update();
         
@@ -142,7 +156,6 @@ function updateBullets() {
                     invader.markedForDeletion = true;
                     score += 10;
                     scoreElement.textContent = score;
-                    localStorage.setItem('Score', score.toString());
                 }
             });
         } else {
@@ -153,17 +166,9 @@ function updateBullets() {
         }
     });
     
-    for (let i = bullets.length - 1; i >= 0; i--) {
-        if (bullets[i].markedForDeletion) {
-            bullets.splice(i, 1);
-        }
-    }
-    
-    for (let i = invaders.length - 1; i >= 0; i--) {
-        if (invaders[i].markedForDeletion) {
-            invaders.splice(i, 1);
-        }
-    }
+    // Remove marked bullets and invaders
+    bullets = bullets.filter(bullet => !bullet.markedForDeletion);
+    invaders = invaders.filter(invader => !invader.markedForDeletion);
     
     if (invaders.length === 0) {
         createInvaders();
@@ -176,5 +181,6 @@ function loseLife() {
     
     if (lives <= 0) {
         gameOver();
+        return;
     }
 }

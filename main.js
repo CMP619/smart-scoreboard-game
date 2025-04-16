@@ -11,6 +11,11 @@ const scoreListElement = document.getElementById('scoreList');
 const nameInputElement = document.getElementById('nameInput');
 const startButtonElement = document.getElementById('startButton');
 
+// Add these variables at the top with other variables
+let lastTime = 0;
+const FPS = 60;
+const frameTime = 1000 / FPS;
+
 // Score Logic
 function displayHighScores() {
     scoreListElement.innerHTML = '';
@@ -20,18 +25,42 @@ function displayHighScores() {
     for (let i = 0; i < Math.min(jsonData.length, 10); i++) {
         const item = jsonData[i];
         const listItem = document.createElement('li');
-        listItem.innerHTML = `${item.name} ${item.score}`;
+        // Fix score formatting
+        const playerName = item.name.trim().padEnd(10, '.');
+        const scoreStr = item.score.toString().padStart(6, '0');
+        listItem.innerHTML = `${playerName}${scoreStr}`;
         scoreListElement.appendChild(listItem);
     }
 }
 
 function addHighScore(name, score) {
-    const scoreNum = parseInt(score, 10);
-    const jsonData = JSON.parse(localStorage.getItem('ScoreList')) || [];
-
-    jsonData.push({ name, score: scoreNum });
-    jsonData.sort((a, b) => b.score - a.score);
+    if (!name || name.trim() === '') return; // Skip empty names
     
+    const scoreNum = parseInt(score, 10);
+    let jsonData = JSON.parse(localStorage.getItem('ScoreList')) || [];
+    
+    // Clean up existing data - remove empty names
+    jsonData = jsonData.filter(item => item.name && item.name.trim() !== '');
+    
+    // Check if score already exists for this name
+    const existingIndex = jsonData.findIndex(item => item.name === name);
+    if (existingIndex !== -1) {
+        // Update score if new score is higher
+        if (scoreNum > jsonData[existingIndex].score) {
+            jsonData[existingIndex].score = scoreNum;
+        }
+    } else {
+        // Add new score
+        jsonData.push({ name, score: scoreNum });
+    }
+    
+    // Sort and keep only top 10
+    jsonData.sort((a, b) => b.score - a.score);
+    if (jsonData.length > 10) {
+        jsonData.length = 10;
+    }
+    
+    localStorage.setItem('ScoreList', JSON.stringify(jsonData));
     displayHighScores();
 }
 
@@ -41,11 +70,25 @@ function startGame() {
     localStorage.setItem('Name', nameInputElement.value.toUpperCase());
     localStorage.setItem('Score', '0');
     localStorage.setItem('GameState', '0');
+    gameRunning = true;
 }
 
 function gameOver() {
-    localStorage.setItem('Score', score.toString());
-    localStorage.setItem('GameState', '1');
+    gameRunning = false;
+    const finalScore = score;
+    const playerName = nameInputElement.value.trim().toUpperCase();
+    
+    if (playerName) { // Only save score if name exists
+        // Add to high scores
+        addHighScore(playerName, finalScore);
+    }
+    
+    // Show start screen
+    startContainer.style.display = 'flex';
+    gameContainer.style.display = 'none';
+    
+    // Clear input for next game
+    nameInputElement.value = '';
 }
 
 function resetGame() {
@@ -65,6 +108,14 @@ function resetGame() {
     
     // Clear bullets
     bullets = [];
+    
+    // Start game loop
+    requestAnimationFrame(gameLoop);
+}
+
+// Add this function to start animation
+function startGameLoop() {
+    requestAnimationFrame(gameLoop);
 }
 
 function init() {
@@ -86,60 +137,51 @@ function init() {
             // Start the game
             startGame();
             resetGame();
+            startGameLoop();
         }
     });
     
-    // Check game state when page loads
-    const gameState = localStorage.getItem('GameState');
-    if (gameState === '1') {
-        // Game ended - show high score entry
-        const playerName = localStorage.getItem('PlayerName') || '';
-        const score = localStorage.getItem('Score') || '0';
-        
-        if (playerName && score) {
-            addHighScore(playerName, score);
-            localStorage.setItem('GameState', '2'); // Reset game state
-        }
-        
-        startContainer.style.display = 'flex';
-        gameContainer.style.display = 'none';
-    } else {
-        // Start at title screen
-        startContainer.style.display = 'flex';
-        gameContainer.style.display = 'none';
-    }
+    // Set initial display state
+    startContainer.style.display = 'flex';
+    gameContainer.style.display = 'none';
 }
 
 // Game Loop
-function gameLoop() {
-    ctx.fillStyle = 'black';
-    ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+function gameLoop(currentTime) {
+    // Calculate delta time
+    const deltaTime = currentTime - lastTime;
     
-    if (gameRunning) {
-        if (keys.Left) {
-            player.velocity.x = -PLAYER_SPEED;
-        } else if (keys.Right) {
-            player.velocity.x = PLAYER_SPEED;
-        } else {
-            player.velocity.x = 0;
+    // Only update if enough time has passed
+    if (deltaTime >= frameTime) {
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+        
+        if (gameRunning) {
+            if (keys.Left) {
+                player.velocity.x = -PLAYER_SPEED;
+            } else if (keys.Right) {
+                player.velocity.x = PLAYER_SPEED;
+            } else {
+                player.velocity.x = 0;
+            }
+            
+            if(keys.Space) {
+                player.fire();
+            }
+            
+            player.update();
+            updateInvaders();
+            updateBullets();
         }
         
-        if(keys.Space) {
-            player.fire();
-        }
+        player.draw();
+        invaders.forEach(invader => invader.draw());
+        bullets.forEach(bullet => bullet.draw());
         
-        player.update();
-        updateInvaders();
-        updateBullets();
-    } else if (keys.Space) {
-        resetGame();
+        lastTime = currentTime;
     }
-    
-    player.draw();
-    invaders.forEach(invader => invader.draw());
-    bullets.forEach(bullet => bullet.draw());
     
     requestAnimationFrame(gameLoop);
 }
 
-init();
+window.addEventListener('DOMContentLoaded', init);

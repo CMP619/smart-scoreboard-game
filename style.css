@@ -32,7 +32,18 @@ h2 {
 }
 
 #scoreList {
-    margin: 10px;
+    margin: 20px;
+    list-style-position: inside;
+    padding: 0;
+    width: 400px;
+}
+
+#scoreList li {
+    font-family: "Press Start 2P";
+    font-size: 20px;
+    color: white;
+    margin: 10px 0;
+    white-space: pre;
 }
 
 .input-container {
@@ -45,7 +56,7 @@ h2 {
 
 #nameLabel {
     margin: 10px;
-    font-size: 20px;
+    font-size: 25px;
     font-weight: 400;
     font-style: normal;
     color: lime;
@@ -71,7 +82,7 @@ h2 {
     margin: 10px;
     background-color: black;
     font-family: "Press Start 2P";
-    font-size: 20px;
+    font-size: 25px;
     font-weight: 400;
     font-style: normal;
     color: lime;
@@ -86,6 +97,7 @@ h2 {
 
 .game-container {
     border: 2px solid lime;
+    display: none;  /* Add this line */
 }
 
 .ui-container {

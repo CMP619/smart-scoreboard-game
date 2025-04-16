@@ -1,0 +1,97 @@
+html, body {
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    background-color: black;
+    font-size: 20px;
+    font-family: "Press Start 2P", system-ui;
+    font-weight: 400;
+    font-style: normal;
+    color: white;
+}
+
+.start-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+h1 {
+    font-size: 40px;
+    font-weight: 400;
+    font-style: normal;
+    color: lime;
+}
+
+h2 {
+    font-size: 30px;
+    font-weight: 400;
+    font-style: normal;
+    color: white;
+}
+
+#scoreList {
+    margin: 10px;
+}
+
+.input-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+}
+
+#nameLabel {
+    margin: 10px;
+    font-size: 20px;
+    font-weight: 400;
+    font-style: normal;
+    color: lime;
+}
+
+#nameInput {
+    margin: 10px;
+    background-color: black;
+    font-family: "Press Start 2P";
+    font-size: 20px;
+    font-weight: 400;
+    font-style: normal;
+    color: lime;
+    border: 2px solid lime;
+    padding: 10px 20px;
+}
+
+#nameInput:focus {
+    outline: none;
+}
+
+#startButton {
+    margin: 10px;
+    background-color: black;
+    font-family: "Press Start 2P";
+    font-size: 20px;
+    font-weight: 400;
+    font-style: normal;
+    color: lime;
+    border: 2px solid lime;
+    padding: 10px 20px;
+}
+
+#startButton:hover {
+    background-color: lime;
+    color: black;
+}
+
+.game-container {
+    border: 2px solid lime;
+}
+
+.ui-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: stretch;
+    margin: 10px;
+}

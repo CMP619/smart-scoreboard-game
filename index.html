@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <title>Space Invaders</title>
+</head>
+<body>
+    <div class="start-container">
+        <h1>SPACE INVADERS</h1>
+        <h2>HIGH SCORES</h2>
+        <ol id="scoreList"></ol>
+        <div class="input-container">
+            <label id="nameLabel" for="nameInput">ENTER NAME</label>
+            <input id="nameInput" type="text" minlength="3" maxlength="13" required>
+            <button id="startButton" type="button">START</button>
+        </div>
+    </div>
+    <div class="game-container">
+        <div class="ui-container">
+            <div>SCORE: <span id="scoreUI">0</span></div>
+            <div>LIVES: <span id="livesUI">3</span></div>
+        </div>
+        <canvas id="gameCanvas"></canvas>
+    </div>
+    <script src="constants.js"></script>
+    <script src="class.js"></script>
+    <script src="game.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

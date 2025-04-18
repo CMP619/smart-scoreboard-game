@@ -16,6 +16,44 @@ let lastTime = 0;
 const FPS = 60;
 const frameTime = 1000 / FPS;
 
+// ABI (Application Binary Interface): javascript - smart contract communication interface
+const { ethers } = require('ethers');
+const contractABI = [
+    {
+        "constant": true,
+        "inputs": [],
+        "name": "getScore",
+        "outputs": [
+            {
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "username",
+                "type": "string"
+            },
+            {
+                "name": "score",
+                "type": "uint256"
+            }
+        ],
+        "name": "submitScore",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+]; 
+const contractAddress = '0x0x7EF2e0048f5bAeDe046f6BF797943daF4ED8CB47';  // Deployed contract address
+
 // Score Logic
 function displayHighScores() {
     scoreListElement.innerHTML = '';
@@ -33,6 +71,23 @@ function displayHighScores() {
     }
 }
 
+// Submitting the scoreboard input to blockchain
+async function submitToBlockchain(username, score) {
+  try {
+    const provider = new ethers.providers.JsonRpcProvider('http://localhost:8545');  // Remix VM default RPC URL
+    const signer = provider.getSigner(); 
+
+    const contract = new ethers.Contract(contractAddress, contractABI, signer);
+    
+    const tx = await contract.submitScore(username, score);
+    await tx.wait(); 
+
+    console.log(`Transaction successful! Hash: ${tx.hash}`);
+  } catch (error) {
+    console.error('Error submitting to blockchain:', error);
+  }
+}
+
 function addHighScore(name, score) {
     if (!name || name.trim() === '') return; // Skip empty names
     
@@ -48,10 +103,12 @@ function addHighScore(name, score) {
         // Update score if new score is higher
         if (scoreNum > jsonData[existingIndex].score) {
             jsonData[existingIndex].score = scoreNum;
+            submitToBlockchain(name, scoreNum);
         }
     } else {
         // Add new score
         jsonData.push({ name, score: scoreNum });
+        submitToBlockchain(name, scoreNum);
     }
     
     // Sort and keep only top 10

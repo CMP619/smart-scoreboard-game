@@ -89,6 +89,70 @@ Here's how the components connect:
 
 ---
 
+### 🔹 **What is the Difference Between Ganache Addresses and the Contract Address in the Code?**
+
+**Ganache addresses** and the **address in the code** are essentially different things, but they are connected in a specific context. Let me explain this in more detail:
+
+---
+
+### **1. Ganache Addresses:**
+
+- **Ganache** is a tool that simulates the Ethereum network locally. It provides several **pre-generated addresses** (accounts) for developers to perform test transactions and interactions with smart contracts.
+- Ganache comes with **private keys** (for each address) and **pre-loaded Ether**. These addresses are used for testing transactions on the Ethereum network.
+- Ganache addresses typically look like this:
+  - **Address (Account)**: `0x4e9D4A2f6aD581647f4eF7Db4B1F69d99C33a10e`
+  - **Private Key**: `c39a8280dbbe7f5da9007b79e7ee8e5e68b0333f8d6e0a9451d89b8baf50a2da`
+  - **Ether Amount**: 100 Ether (example)
+
+These addresses are used for **testing purposes** in the local Ethereum network and are **not connected to real Ether**. They are used for trial transactions.
+
+---
+
+### **2. Contract Address in the Code:**
+
+- The **address in the code** refers to the **smart contract address**. This is the location where the smart contract is **deployed** on the Ethereum network. The contract gets assigned an **address** on the network once deployed.
+- The **address in the code** (e.g., `0x7EF2e0048f5bAeDe046f6BF797943daF4ED8CB47`) usually refers to the **smart contract's address**. This address will handle **transactions sent to the contract**, which in turn will call functions inside the smart contract.
+- The **contract address** is provided after successfully deploying the smart contract to the Ethereum network. It acts as the **endpoint** for transactions related to the contract.
+
+---
+
+### **Differences:**
+
+1. **Ganache Addresses**:
+   - These are **pre-generated accounts** used by developers for **performing test transactions** on the local Ethereum network.
+   - These addresses allow you to perform operations using **test Ether**, not real Ether.
+
+2. **Contract Address in the Code**:
+   - This is the address where a **smart contract** is deployed on the Ethereum network after it is successfully compiled and deployed.
+   - The contract address is the **management point** where transactions are sent for execution of smart contract functions.
+
+---
+
+- **Ganache addresses** are **local Ethereum addresses** used for testing and interacting with smart contracts in a local development environment. These addresses hold test Ether (not real Ether).
+- The **contract address in the code** is the address where the **smart contract** is deployed and allows users to interact with the smart contract by sending transactions to this address.
+
+---
+
 ### ✅ **Final Summary**
 
 > We used **Solidity** to write a smart contract (in Remix), deployed it to a **local blockchain** (Ganache), and interacted with it from the browser using **ethers.js** — which used the **ABI**, **provider**, and **signer** to send transactions.
+
+
+--------------------------------- DECODING TX DATA --------------------------------- 
+
+const { ethers } = require("ethers");
+
+const abi = [ // sadece ilgili fonksiyon yeterli
+  "function submitScore(string username, uint256 score)"
+];
+
+const iface = new ethers.utils.Interface(abi);
+
+const txData = "0x5962be17000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000b400000000000000000000000000000000000000000000000000000000000000065445535420320000000000000000000000000000000000000000000000000000";
+
+const decoded = iface.parseTransaction({ data: txData });
+
+console.log("Fonksiyon:", decoded.name);
+console.log("Kullanıcı adı:", decoded.args.username);
+console.log("Skor:", decoded.args.score.toString());
+

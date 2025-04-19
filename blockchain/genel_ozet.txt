@@ -1,0 +1,60 @@
+### 1. **Blockchain Nedir?**
+
+Blockchain, verilerin güvenli ve şeffaf bir şekilde saklandığı, merkezi olmayan bir sistemdir. Genelde kripto paraların işlendiği bir ortam olarak bilinse de, aslında her türlü veri işlemini güvenli bir şekilde kaydedebileceğimiz bir yapıdır.
+
+### 2. **Ganache Nedir?**
+
+**Ganache**, bir yerel blockchain simülatörüdür. Yani gerçek Ethereum ağına bağlanmadan, kendi bilgisayarınızda blockchain işlemleri yapmanıza olanak tanır. Geliştiriciler, kontratlarını test etmek ve farklı senaryoları deneyimlemek için Ganache kullanır. Ganache ile Ethereum blok zincirinin bir kopyasını bilgisayarınızda çalıştırabilirsiniz. Bu sayede, hiçbir masraf yapmadan işlemlerinizi test edebilirsiniz.
+
+### 3. **Remix ve Solidity Nedir?**
+
+**Remix**, Ethereum akıllı sözleşmelerini (smart contracts) yazmak ve test etmek için kullanılan bir online IDE'dir. Solidity ise, Ethereum akıllı sözleşmelerini yazmak için kullanılan bir programlama dilidir. Bu ikisi sayesinde Ethereum üzerinde çalışan uygulamaları geliştirebilirsiniz.
+
+### 4. **Yaptıklarımızı Adım Adım Anlatalım**
+
+#### A. **Smart Contract Yazma (Solidity ile)**
+
+İlk olarak, bir **smart contract** (akıllı sözleşme) yazdık. Akıllı sözleşmeler, blockchain üzerinde çalışan ve önceden belirlenen kurallara göre otomatik olarak gerçekleşen kodlardır. Bizim yazdığımız kontrat, bir kullanıcı adı (username) ve bir skor (score) alır ve bu veriyi blockchain ağına kaydeder. 
+
+Akıllı sözleşmemiz şu iki temel fonksiyona sahipti:
+- **getScore**: Bu fonksiyon, blockchain üzerindeki mevcut skoru almak için kullanılır.
+- **submitScore**: Bu fonksiyon, kullanıcı adı ve skoru alır ve bunları blockchain üzerinde kaydeder.
+
+#### B. **Akıllı Kontratı Remix ile Dağıtma**
+
+Yazdığımız akıllı sözleşmeyi test etmek için **Remix**'i kullandık. Remix, akıllı sözleşmelerin yazılmasını ve test edilmesini sağlayan bir platformdur. Burada Solidity dilinde yazdığımız kontratı, Ethereum ağında çalıştırılmak üzere dağıttık. Kontratı dağıttıktan sonra, onun adresini aldık. Bu adres, blockchain üzerinde kontratımıza erişmek için kullandığımız kimliktir.
+
+#### C. **Ganache ile Blockchain Kurma**
+
+Blockchain üzerinde işlemler yapabilmek için, **Ganache** kullanarak bir test ağı oluşturduk. Ganache, bizim yerel blockchain ağımızı simüle etti. Bu test ağında, Ethereum ağına gerçek para harcamadan test işlemleri yapabiliyoruz. Ganache'ı başlattığımızda, bize **farklı Ethereum adresleri** ve **her adres için private key** sağladı. Bu adresleri, blockchain üzerinde işlem yapmak için kullanacağız.
+
+#### D. **Veriyi Blockchain'e Kaydetme (Web3.js ve Ethers.js)**
+
+Veri kaydını gerçekleştirmek için **Ethers.js** kütüphanesini kullandık. Ethers.js, JavaScript kullanarak Ethereum blockchain ile etkileşimde bulunmamızı sağlar. Ethers.js ile şu adımları yaptık:
+- **Provider**: Bu, blockchain ağına bağlanmamızı sağlayan bir aracıydı. **Ganache** ile bağlandık.
+- **Signer**: Bu, bizim Ethereum işlemlerini imzalamamızı sağlar. Yani, bir işlemi göndermek ve onaylamak için kullanılır.
+- **Contract**: Akıllı sözleşme ile etkileşimde bulunmak için bu nesneyi oluşturduk. Akıllı sözleşmenin adresini ve ABI'sini (Uygulama Binary Interface) kullanarak kontratla bağlantı kurduk.
+
+#### E. **Blockchain'e Veri Gönderme**
+
+Kullanıcı adı ve skoru **submitScore** fonksiyonu ile blockchain'e gönderdik. Bu işlem şu şekilde gerçekleşiyor:
+1. Kullanıcı adı ve skoru, frontend (oyun kısmı) tarafından alınır.
+2. **Ethers.js** kullanılarak bu veriler, Ethereum blockchain'ine gönderilir.
+3. Blockchain, bu verileri akıllı sözleşmeye kaydeder.
+
+#### F. **Veriyi Çözme (Decode Etme)**
+
+Gönderdiğimiz veri, blockchain üzerinde şifrelenmiş bir biçimde tutulur. Bu veriyi anlamak için **decode** işlemi yapılır. Yani, blockchain üzerinde kaydedilen ham veriyi (hex formatında) doğru bir şekilde çözümlemek gerekir. Biz de Ethereum blockchain üzerinden aldığımız veriyi **decoding** işlemiyle çözerek, gerçek veriye ulaşabiliriz.
+
+#### G. **Diğer Bilgisayarda Çalıştırmak**
+
+Blockchain üzerindeki veriyi başka bir bilgisayarda çalıştırmak için, şu adımları izleyebilirsiniz:
+1. **Ganache'ı Diğer Bilgisayara Kurun**: Her bilgisayara Ganache kurulmalıdır. Ganache'ı çalıştırarak, yeni bir blockchain ağı başlatın.
+2. **Kontratı Aynı Adreste Dağıtın**: Kontratı diğer bilgisayara dağıtmak için, aynı adresi ve private key'leri kullanarak işlemlerinizi tekrar yapabilirsiniz.
+3. **Frontend (Oyun) Kodunu Çalıştırın**: Aynı frontend kodunu, diğer bilgisayarda çalıştırarak blockchain'e veri gönderebilirsiniz. Aynı RPC ayarlarını ve kontrat adresini kullanmanız gerekir.
+
+### 5. **Sonuç ve Özet**
+
+Yapmak istediğiniz şey, yerel bir blockchain ağı üzerinde test yapmak ve kullanıcı skorlarını buraya kaydetmekti. Bunun için Solidity ile akıllı sözleşmeler yazdık, Remix ile bunları dağıttık, Ganache ile yerel blockchain simülasyonu yaptık ve Ethers.js ile blockchain'e veri gönderdik. Bu işlemi başka bir bilgisayarda çalıştırmak için Ganache'ı kurarak aynı kontrat adresi ve private key'leri kullanabilirsiniz.
+
+Bu süreç, blockchain uygulamalarını test etmek için harika bir yöntemdir çünkü gerçek Ethereum ağına bağlantı gerektirmez ve herhangi bir ücret ödemenizi engeller.

@@ -1,0 +1,94 @@
+### 🔹 **What is an ABI? (Application Binary Interface)**  
+- ABI is like a *dictionary* that tells your JavaScript code **how to talk to the smart contract**.  
+- It defines what functions exist in the contract, what inputs/outputs they expect, and how to format the data when calling them.
+- It's needed whenever you want to interact with a deployed contract from JavaScript.
+
+---
+
+### 🔹 **What is a Smart Contract?**  
+- A **smart contract** is a program written in Solidity (or similar languages) that runs on the blockchain.  
+- It contains rules and logic like a traditional program, but the difference is: **it’s immutable and decentralized** once deployed.
+- In your case, the smart contract stores and retrieves game scores.
+
+---
+
+### 🔹 **What is `ethers.provider`?**  
+- The **provider** is your connection to the blockchain.
+- It's like the “internet” for Ethereum — it lets your app read data from the blockchain (e.g., contract state).
+- Example:  
+  ```js
+  const provider = new ethers.providers.JsonRpcProvider('http://localhost:8545');
+  ```
+
+---
+
+### 🔹 **What is a Signer?**  
+- A **signer** is an Ethereum account that can send transactions — it holds a **private key**.
+- It’s what you need when you want to **write data to the blockchain** (e.g., submit a score).
+- It uses the provider to send signed transactions.
+- Example:  
+  ```js
+  const signer = provider.getSigner();
+  ```
+
+---
+
+### 🔹 **How Do They Work Together?**
+
+Here's how the components connect:
+
+          ┌─────────────┐
+          │   Remix     │ ← (used to write and deploy)
+          └────┬────────┘
+               │
+     (Solidity Contract Code)
+               ↓
+       ┌─────────────┐
+       │  Ganache    │ ← (local blockchain)
+       └────┬────────┘
+            │
+   ┌────────▼────────┐
+   │ Deployed Contract│
+   └────┬────────────┘
+        │ ABI + Address
+        ↓
+   ┌──────────────┐
+   │  Ethers.js   │ ← (JavaScript in browser)
+   └──────────────┘
+        │
+        ▼
+   ┌────────────┐
+   │  Provider  │ ← (connect to Ganache)
+   └────┬───────┘
+        │
+   ┌────▼───────┐
+   │  Signer    │ ← (send signed tx)
+   └────────────┘
+
+---
+
+### 🔹 **What is Remix?**
+- **Remix IDE** is an online tool where you can write, compile, and deploy smart contracts written in **Solidity**.
+- You can test your contracts easily and connect to **Ganache**, **MetaMask**, or **testnets**.
+
+---
+
+### 🔹 **What is Solidity?**
+- **Solidity** is the main programming language for writing smart contracts on Ethereum.
+- It looks like JavaScript/C++, and it compiles into bytecode that runs on the Ethereum Virtual Machine (EVM).
+
+---
+
+### 🔹 **What is Ganache?**
+- **Ganache** is a local blockchain for Ethereum development.
+- It simulates a blockchain network on your computer — fast, free, and doesn't use real ETH.
+- It provides:
+  - 10 dummy accounts with private keys
+  - A block explorer
+  - Logging of all transactions
+
+---
+
+### ✅ **Final Summary**
+
+> We used **Solidity** to write a smart contract (in Remix), deployed it to a **local blockchain** (Ganache), and interacted with it from the browser using **ethers.js** — which used the **ABI**, **provider**, and **signer** to send transactions.

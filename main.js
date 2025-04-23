@@ -139,19 +139,23 @@ function gameOver() {
 }
 
 function showExplosion(callback) {
+    //playSound('sfx/player_explosion.mp3', 0.8); 
+    playerExplosionSound.currentTime = 0; 
+    playerExplosionSound.play();
+
     Player.visible = false;
     const explosion = document.getElementById('explosionGif');
     explosion.style.display = 'block';
     
     explosion.style.left = `${player.position.x}px`;
     explosion.style.top = `${player.position.y}px`;
-
+  
     gameRunning = false;
 
     setTimeout(() => {
         explosion.style.display = 'none';
         callback(); 
-    }, 1000); 
+    }, 1500); 
 }
 
 function finalizeGameOver() {
@@ -205,6 +209,11 @@ function startGameLoop() {
 }
 
 function init() {
+    // Play Main Menu music
+    //mainMenuAmbientMusic.currentTime = 0;
+    //mainMenuAmbientMusic.play();
+    startMainMenuMusic();
+    
     // Set canvas dimensions
     canvas.width = GAME_WIDTH;
     canvas.height = GAME_HEIGHT;
@@ -220,6 +229,7 @@ function init() {
             startContainer.style.display = 'none';
             gameContainer.style.display = 'block';
             
+            stopMainMenuMusic();
             // Start the game
             startGame();
             resetGame();
@@ -293,5 +303,8 @@ mainMenuButtonElement.addEventListener('click', () => {
     nameInputElement.value = '';
     gameOverContainer.style.display = 'none';
     startContainer.style.display = 'flex';
+
+    if(musicPlaying)
+        startMainMenuMusic(); 
 });
 

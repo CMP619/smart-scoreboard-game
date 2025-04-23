@@ -195,4 +195,21 @@ h2 {
     color: black;
 }
 
+#toggleMusicButton {
+    margin: 20px;
+    background-color: black;
+    font-family: "Press Start 2P";
+    font-size: 18px;
+    color: lime;
+    border: 2px solid lime;
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+#toggleMusicButton:hover {
+    background-color: lime;
+    color: black;
+}
+
+
 

@@ -59,6 +59,10 @@ class Player extends GameObject {
         );
         this.cooldown = 0;
         this.upperLimitY = GAME_HEIGHT / 2;
+        this.invulnerable = false;
+        this.invulnerableTimer = 0;
+        this.flickerToggle = false;
+        this.flickerTimer = 0;
     }
 
     update() {
@@ -85,6 +89,21 @@ class Player extends GameObject {
         if (this.cooldown > 0) {
             this.cooldown--;
         }
+
+        if (this.invulnerable) {
+            this.invulnerableTimer--;
+            this.flickerTimer++;
+        
+            if (this.flickerTimer % 7 === 0) {  // her 10 frame'de bir toggle 
+                this.flickerToggle = !this.flickerToggle;
+            }
+        
+            if (this.invulnerableTimer <= 0) {
+                this.invulnerable = false;
+                this.flickerToggle = false;
+                this.flickerTimer = 0;
+            }
+        }
     }
 
     fire() {
@@ -98,6 +117,12 @@ class Player extends GameObject {
             bullets.push(bullet);
             this.cooldown = PLAYER_COOLDOWN;
         }
+    }
+
+    draw() {
+        if (this.invulnerable && this.flickerToggle) return;
+    
+        super.draw();
     }
 }
 

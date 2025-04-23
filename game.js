@@ -110,7 +110,8 @@ function updateInvaders() {
         
         if(checkCollision(invader,player))
         {
-            gameOver();
+            loseLife();
+            //gameOver();
             return;
         }
 
@@ -171,7 +172,7 @@ function updateBullets() {
                 }
             });
         } else {
-            if (checkCollision(bullet, player)) {
+            if (checkCollision(bullet, player) && ! player.invulnerable) {
                 bullet.markedForDeletion = true;
                 loseLife();
             }
@@ -188,15 +189,21 @@ function updateBullets() {
 }
 
 function loseLife() {
-    lives--;
-    livesElement.textContent = lives;
     
-    const damageOverlay = document.getElementById('damageOverlay');
-    damageOverlay.style.opacity = '1';
+    if(!player.invulnerable) {
+        lives--;
+        livesElement.textContent = lives;
 
-    setTimeout(() => {
-        damageOverlay.style.opacity = '0';
-    }, 100); 
+        player.invulnerable = true;
+        player.invulnerableTimer = 90; // 1.5 saniye @ 60 FPS    
+    
+        const damageOverlay = document.getElementById('damageOverlay');
+        damageOverlay.style.opacity = '1';
+    
+        setTimeout(() => {
+            damageOverlay.style.opacity = '0';
+        }, 100); 
+    }
     
     if (lives <= 0) {
         gameOver();

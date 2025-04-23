@@ -100,6 +100,7 @@ function updateInvaders() {
     if (!gameRunning) return;
     
     let reachedEdge = false;
+    let currentLowestY = 0;
     
     invaders.forEach(invader => {
         if ((invader.position.x <= 0 && invaderDirection < 0) || 
@@ -107,12 +108,19 @@ function updateInvaders() {
             reachedEdge = true;
         }
         
-        // Check if invader reached player level
-        if (invader.position.y + invader.height >= player.position.y) {
+        if(checkCollision(invader,player))
+        {
             gameOver();
             return;
         }
+
+        const bottomY = invader.position.y + invader.height;
+        if (bottomY > currentLowestY) {
+            currentLowestY = bottomY;
+        }
     });
+
+    Invader.lowestY = currentLowestY;
     
     // Only continue if game is still running
     if (!gameRunning) return;
@@ -189,9 +197,9 @@ function loseLife() {
     setTimeout(() => {
         damageOverlay.style.opacity = '0';
     }, 100); 
-
+    
     if (lives <= 0) {
         gameOver();
         return;
-    }
+    }       
 }

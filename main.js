@@ -221,6 +221,15 @@ function gameLoop(currentTime) {
                 player.velocity.x = 0;
             }
             
+            if (keys.Up) {
+                player.velocity.y = -PLAYER_SPEED;
+            } else if (keys.Down) {
+                player.velocity.y = PLAYER_SPEED;
+            } else {
+                player.velocity.y = 0;
+            }
+            
+            
             if(keys.Space) {
                 player.fire();
             }

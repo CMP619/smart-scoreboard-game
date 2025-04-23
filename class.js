@@ -58,17 +58,28 @@ class Player extends GameObject {
             imageSrc
         );
         this.cooldown = 0;
+        this.upperLimitY = GAME_HEIGHT / 2;
     }
 
     update() {
         super.update();
-        
+            
+        const verticalBuffer = 10; 
+        this.upperLimitY = Invader.lowestY + verticalBuffer;
+    
         // Keep player within game bounds
         if (this.position.x < 0) {
             this.position.x = 0;
         } else if (this.position.x + this.width > GAME_WIDTH) {
             this.position.x = GAME_WIDTH - this.width;
         }
+        
+        if (this.position.y < this.upperLimitY) {
+            this.position.y = this.upperLimitY;
+        } else if (this.position.y + this.height > GAME_HEIGHT) {
+            this.position.y = GAME_HEIGHT - this.height;
+        }
+        
         
         // Update cooldown
         if (this.cooldown > 0) {
@@ -122,6 +133,8 @@ class Invader extends GameObject {
         bullets.push(bullet);
     }
 }
+
+Invader.lowestY = 0;
 
 class Bullet extends GameObject {
     constructor(x, y, velocityX, velocityY, width = BULLET_WIDTH, height = BULLET_HEIGHT) {

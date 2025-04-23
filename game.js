@@ -183,6 +183,13 @@ function loseLife() {
     lives--;
     livesElement.textContent = lives;
     
+    const damageOverlay = document.getElementById('damageOverlay');
+    damageOverlay.style.opacity = '1';
+
+    setTimeout(() => {
+        damageOverlay.style.opacity = '0';
+    }, 100); 
+
     if (lives <= 0) {
         gameOver();
         return;

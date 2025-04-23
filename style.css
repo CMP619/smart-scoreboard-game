@@ -140,4 +140,59 @@ h2 {
     pointer-events: none;
 }
 
+.gameover-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+}
+
+.gameover-container h1 {
+    font-size: 50px;
+    color: red;
+    margin-bottom: 20px;
+}
+
+.gameover-container h2 {
+    font-size: 30px;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.gameover-container h3 {
+    font-size: 24px;
+    color: lime;
+    margin-bottom: 10px;
+}
+
+.gameover-container p {
+    font-size: 20px;
+    color: white;
+    margin-bottom: 30px;
+}
+
+.button-container {
+    display: flex;
+    gap: 20px;
+}
+
+#playAgainButton,
+#mainMenuButton {
+    background-color: black;
+    font-family: "Press Start 2P";
+    font-size: 20px;
+    color: lime;
+    border: 2px solid lime;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+#playAgainButton:hover,
+#mainMenuButton:hover {
+    background-color: lime;
+    color: black;
+}
+
 

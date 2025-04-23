@@ -7,9 +7,12 @@ const scoreElement = document.getElementById('scoreUI');
 const livesElement = document.getElementById('livesUI');
 const gameContainer = document.querySelector('.game-container');
 const startContainer = document.querySelector('.start-container');
+const gameOverContainer = document.querySelector('.gameover-container');
 const scoreListElement = document.getElementById('scoreList');
 const nameInputElement = document.getElementById('nameInput');
 const startButtonElement = document.getElementById('startButton');
+const playAgainButtonElement = document.getElementById('playAgainButton');
+const mainMenuButtonElement = document.getElementById('mainMenuButton');
 
 // Add these variables at the top with other variables
 let lastTime = 0;
@@ -159,14 +162,24 @@ function finalizeGameOver() {
         addHighScore(playerName, finalScore);
     }
 
-    startContainer.style.display = 'flex';
     gameContainer.style.display = 'none';
-    nameInputElement.value = '';
+    startContainer.style.display = 'none';
+
+    gameOverContainer.style.display = 'flex';
+
+    document.getElementById('gameOverPlayerName').textContent = playerName;
+    document.getElementById('gameOverScore').textContent = `Your Score: ${finalScore}`;
+
+    //startContainer.style.display = 'flex';
+    //gameContainer.style.display = 'none';
+    //nameInputElement.value = '';
 }
 
 function resetGame() {
     score = 0;
     lives = 3;
+    Player.visible = true;
+    Invader.lowestY = 0;
     gameRunning = true;
     
     // Update UI
@@ -267,3 +280,18 @@ function gameLoop(currentTime) {
 }
 
 window.addEventListener('DOMContentLoaded', init);
+
+playAgainButtonElement.addEventListener('click', () => {
+    gameOverContainer.style.display = 'none';
+    gameContainer.style.display = 'block';
+    startGame();
+    resetGame();
+    startGameLoop();
+});
+
+mainMenuButtonElement.addEventListener('click', () => {
+    nameInputElement.value = '';
+    gameOverContainer.style.display = 'none';
+    startContainer.style.display = 'flex';
+});
+

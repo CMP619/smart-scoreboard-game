@@ -132,3 +132,12 @@ h2 {
     padding: 10px 20px; /* Replace margin with padding */
 }
 
+#explosionGif {
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    z-index: 20;
+    pointer-events: none;
+}
+
+

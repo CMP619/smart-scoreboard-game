@@ -130,20 +130,37 @@ function startGame() {
 }
 
 function gameOver() {
+    showExplosion(() => {
+        finalizeGameOver();
+    });
+}
+
+function showExplosion(callback) {
+    Player.visible = false;
+    const explosion = document.getElementById('explosionGif');
+    explosion.style.display = 'block';
+    
+    explosion.style.left = `${player.position.x}px`;
+    explosion.style.top = `${player.position.y}px`;
+
     gameRunning = false;
+
+    setTimeout(() => {
+        explosion.style.display = 'none';
+        callback(); 
+    }, 1000); 
+}
+
+function finalizeGameOver() {
     const finalScore = score;
     const playerName = nameInputElement.value.trim().toUpperCase();
-    
-    if (playerName) { // Only save score if name exists
-        // Add to high scores
+
+    if (playerName) {
         addHighScore(playerName, finalScore);
     }
-    
-    // Show start screen
+
     startContainer.style.display = 'flex';
     gameContainer.style.display = 'none';
-    
-    // Clear input for next game
     nameInputElement.value = '';
 }
 

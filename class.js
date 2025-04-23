@@ -46,6 +46,7 @@ class GameObject {
     }
 }
 
+
 class Player extends GameObject {
     constructor(imageSrc) {
         const playerWidth = 64 * MODEL_SCALE;
@@ -120,11 +121,14 @@ class Player extends GameObject {
     }
 
     draw() {
+        if (!Player.visible) return;
+
         if (this.invulnerable && this.flickerToggle) return;
     
         super.draw();
     }
 }
+Player.visible = true;
 
 class Invader extends GameObject {
     constructor(x, y, type) {
@@ -170,6 +174,7 @@ class Bullet extends GameObject {
     }
 
     draw() {
+        if (!Player.visible) return;
         ctx.fillStyle = this.isEnemy ? 'lime' : 'white';
         ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
     }

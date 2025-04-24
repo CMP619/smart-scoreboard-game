@@ -17,50 +17,84 @@ const PLAYER_COOLDOWN = 15;
 // Asset Configuration
 const ASSETS = {
     player01: {
-        src: 'img/spaceship01.png',
-        width: 64,
-        height: 32
+        src: 'img/player_not.png',
+        width: 24,
+        height: 24
+    },
+    player02: {
+        src: 'img/player_or.png',
+        width: 24,
+        height: 24
+    },
+    player03: {
+        src: 'img/player_and.png',
+        width: 24,
+        height: 24
     },
     invader01: {
-        src: 'img/invader01.png',
-        width: 48,
-        height: 32
+        src: 'img/enemy_buffer.png',
+        width: 24,
+        height: 24
     },
     invader02: {
-        src: 'img/invader02.png',
-        width: 48,
-        height: 32
+        src: 'img/enemy_nor.png',
+        width: 24,
+        height: 24
     },
     invader03: {
-        src: 'img/invader03.png',
-        width: 48,
-        height: 32
+        src: 'img/enemy_nand.png',
+        width: 24,
+        height: 24
+    },
+    bullet00: {
+        src: 'img/bullet_zero.png',
+        width: 3,
+        height: 6
+    },
+    bullet01: {
+        src: 'img/bullet_one.png',
+        width: 3,
+        height: 6
     }
 };
 
 const INVADER_CONFIGS = {
     invader01: {
         score: 10,
-        width: 48,
+        width: 32,
         height: 32,
-        bulletSize: { width: 4, height: 12 }, // middle bullet
+        bulletSize: { width: 4, height: 8 }, // middle bullet
         fireRate: 0.002, // normal frequency
-        src: 'img/invader01.png'
+        bulletSrc: ASSETS.bullet00.src,
+        src: ASSETS.invader01.src
     },
     invader02: {
         score: 20,
-        width: 48,
+        width: 32,
         height: 32,
-        bulletSize: { width: 6, height: 14 }, // big bullet
+        bulletSize: { width: 6, height: 12 }, // big bullet
         fireRate: 0.001, // rare frequency
-        src: 'img/invader02.png'
+        bulletSrc: ASSETS.bullet00.src,
+        src: ASSETS.invader02.src
     },
     invader03: {
         score: 30,
-        width: 48,
+        width: 32,
         height: 32,
-        bulletSize: { width: 2, height: 8 }, // small bullet
+        bulletSize: { width: 2, height: 4 }, // small bullet
         fireRate: 0.003, // rain frequency
-        src: 'img/invader03.png'
+        bulletSrc: ASSETS.bullet00.src,
+        src: ASSETS.invader03.src
+    }
+};
+
+const PLAYER_CONFIGS = {
+    player01: {
+        score: 10,
+        width: 48,
+        height: 48,
+        bulletSize: { width: 4, height: 8 },
+        bulletSrc: ASSETS.bullet01.src,
+        src: ASSETS.player01.src
     }
 };

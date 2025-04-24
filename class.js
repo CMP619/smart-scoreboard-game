@@ -49,8 +49,8 @@ class GameObject {
 
 class Player extends GameObject {
     constructor(imageSrc) {
-        const playerWidth = 64 * MODEL_SCALE;
-        const playerHeight = 32 * MODEL_SCALE;
+        const playerWidth = PLAYER_CONFIGS.player01.width * MODEL_SCALE;
+        const playerHeight = PLAYER_CONFIGS.player01.height * MODEL_SCALE;
         super(
             GAME_WIDTH / 2 - playerWidth / 2,
             GAME_HEIGHT - playerHeight - PLAYER_OFFSET,
@@ -167,16 +167,21 @@ Invader.lowestY = 0;
 
 class Bullet extends GameObject {
     constructor(x, y, velocityX, velocityY, width = BULLET_WIDTH, height = BULLET_HEIGHT) {
-        super(x, y, width, height);
+        const bulletSrc = velocityY > 0 ? ASSETS.bullet00.src : ASSETS.bullet01.src;
+        super(x, y, width, height, bulletSrc);
         this.velocity.x = velocityX;
         this.velocity.y = velocityY;
-        this.isEnemy = false;
+        this.isEnemy = velocityY > 0;
     }
 
     draw() {
         if (!Player.visible) return;
-        ctx.fillStyle = this.isEnemy ? 'lime' : 'white';
-        ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
+        if (this.image && this.imageLoaded) {
+            ctx.drawImage(this.image, this.position.x, this.position.y, this.width, this.height);
+        } else {
+            ctx.fillStyle = this.isEnemy ? 'lime' : 'white';
+            ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
+        }
     }
 
     update() {

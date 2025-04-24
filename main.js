@@ -13,6 +13,7 @@ const nameInputElement = document.getElementById('nameInput');
 const startButtonElement = document.getElementById('startButton');
 const playAgainButtonElement = document.getElementById('playAgainButton');
 const mainMenuButtonElement = document.getElementById('mainMenuButton');
+const nameWarningElement = document.getElementById("nameWarning");
 
 // Add these variables at the top with other variables
 let lastTime = 0;
@@ -217,6 +218,10 @@ function init() {
         const playerName = nameInputElement.value.trim();
         if (playerName.length >= 3) {
             // Hide start screen, show game screen
+            nameWarningElement.style.display = 'none';
+            nameInputElement.style.border = '2px solid lime';
+            nameInputElement.classList.remove('shake');
+
             startContainer.style.display = 'none';
             gameContainer.style.display = 'block';
             
@@ -224,6 +229,16 @@ function init() {
             startGame();
             resetGame();
             startGameLoop();
+        }
+        else {
+            // Show warning
+            nameWarningElement.style.display = 'block';
+            nameInputElement.style.border = '2px solid red';
+
+            // Shake animasyonu tetikle
+            nameInputElement.classList.remove('shake'); // önce temizle
+            void nameInputElement.offsetWidth;          // tekrar tetiklemek için "hack"
+            nameInputElement.classList.add('shake');
         }
     });
     

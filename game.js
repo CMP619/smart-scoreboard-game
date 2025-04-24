@@ -211,6 +211,7 @@ function loseLife() {
     }
     
     if (lives <= 0) {
+        stopCurrentMusic();
         gameOver();
         return;
     }       

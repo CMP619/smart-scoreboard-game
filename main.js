@@ -129,11 +129,14 @@ function startGame() {
     localStorage.setItem('Name', nameInputElement.value.toUpperCase());
     localStorage.setItem('Score', '0');
     localStorage.setItem('GameState', '0');
+    playMusic('gameplay'); 
     gameRunning = true;
 }
 
-function gameOver() {
+function gameOver() { 
     showExplosion(() => {
+        gameoverSound.currentTime = 0;
+        gameoverSound.play();
         finalizeGameOver();
     });
 }
@@ -159,6 +162,9 @@ function showExplosion(callback) {
 }
 
 function finalizeGameOver() {
+    stopCurrentMusic();
+    document.getElementById('toggleMusicButton').style.display = 'none'; 
+
     const finalScore = score;
     const playerName = nameInputElement.value.trim().toUpperCase();
 
@@ -212,7 +218,7 @@ function init() {
     // Play Main Menu music
     //mainMenuAmbientMusic.currentTime = 0;
     //mainMenuAmbientMusic.play();
-    startMainMenuMusic();
+    playMusic('menu');
     
     // Set canvas dimensions
     canvas.width = GAME_WIDTH;
@@ -229,7 +235,6 @@ function init() {
             startContainer.style.display = 'none';
             gameContainer.style.display = 'block';
             
-            stopMainMenuMusic();
             // Start the game
             startGame();
             resetGame();
@@ -297,14 +302,15 @@ playAgainButtonElement.addEventListener('click', () => {
     startGame();
     resetGame();
     startGameLoop();
+    playMusic('gameplay');
+    document.getElementById('toggleMusicButton').style.display = 'inline-block';
 });
 
 mainMenuButtonElement.addEventListener('click', () => {
     nameInputElement.value = '';
     gameOverContainer.style.display = 'none';
     startContainer.style.display = 'flex';
-
-    if(musicPlaying)
-        startMainMenuMusic(); 
+    playMusic('menu');
+    document.getElementById('toggleMusicButton').style.display = 'inline-block';
 });
 

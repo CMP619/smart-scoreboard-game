@@ -8,7 +8,8 @@ const livesElement = document.getElementById('livesUI');
 const gameContainer = document.querySelector('.game-container');
 const startContainer = document.querySelector('.start-container');
 const gameOverContainer = document.querySelector('.gameover-container');
-const scoreListElement = document.getElementById('scoreList');
+const blockchainScoresElement = document.getElementById('blockchainScores');
+const localScoresElement = document.getElementById('localScores');
 const nameInputElement = document.getElementById('nameInput');
 const startButtonElement = document.getElementById('startButton');
 const playAgainButtonElement = document.getElementById('playAgainButton');
@@ -23,106 +24,229 @@ const frameTime = 1000 / FPS;
 // ABI (Application Binary Interface): javascript - smart contract communication interface
 const contractABI = [
     {
-        "constant": true,
-        "inputs": [],
-        "name": "getScore",
-        "outputs": [
-            {
-                "name": "",
-                "type": "string"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "constant": false,
         "inputs": [
             {
+                "internalType": "string",
                 "name": "username",
                 "type": "string"
             },
             {
+                "internalType": "uint256",
                 "name": "score",
                 "type": "uint256"
             }
         ],
         "name": "submitScore",
         "outputs": [],
-        "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getScoreCount",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "index",
+                "type": "uint256"
+            }
+        ],
+        "name": "getScore",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            },
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "username",
+                "type": "string"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "player",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "score",
+                "type": "uint256"
+            }
+        ],
+        "name": "ScoreSubmitted",
+        "type": "event"
     }
-]; 
-const contractAddress = '0x7EF2e0048f5bAeDe046f6BF797943daF4ED8CB47';  // Our contract address
+];
 
-// Submitting the scoreboard input to blockchain
-async function submitToBlockchain(username, score) {
-  try {
-    const provider = new ethers.providers.JsonRpcProvider('http://localhost:7545');  // Remix VM default RPC URL
-    const signer = provider.getSigner(0);  // There is 10 dummy accounts on that network, we choose the first one 
+const contractAddress = '0x87e915B7E9eD3B79815cef2844B59608e231C7db';  // Our contract address
 
-    const contract = new ethers.Contract(contractAddress, contractABI, signer);
-    
-    const tx = await contract.submitScore(username, score);
-    await tx.wait(); 
+let provider, signer, contract;
 
-    console.log(`Transaction successful! Hash: ${tx.hash}`);
-  } catch (error) {
-    console.error('Error submitting to blockchain:', error);
-  }
+async function initializeBlockchain() {
+    try {
+        provider = new ethers.providers.JsonRpcProvider('http://localhost:7545');
+        signer = provider.getSigner(0);
+        contract = new ethers.Contract(contractAddress, contractABI, signer);
+        console.log('Blockchain objects initialized.');
+    } catch (error) {
+        console.error('Blockchain initialization failed:', error);
+    }
 }
 
-// Score Logic
-function displayHighScores() {
-    scoreListElement.innerHTML = '';
+
+
+async function displayBlockchainScores() {
+    const blockchainScoresElement = document.getElementById("blockchainScores");
+    blockchainScoresElement.innerHTML = '';  // önceki skorları temizle
+
+    if (contract) {
+        try {
+            // Blockchain'den toplam skor sayısını al
+            const scoreCount = await contract.getScoreCount();
+            console.log('Blockchain score count:', scoreCount.toString());
+
+            const scores = [];
+            for (let i = 0; i < scoreCount; i++) {
+                // Blockchain'den her skoru al
+                const [username, , score] = await contract.getScore(i);
+                scores.push({ name: username, score: parseInt(score.toString()) });
+            }
+
+            // Skorları azalan sıraya göre sırala
+            scores.sort((a, b) => b.score - a.score);
+
+            // İlk 10 skoru listele
+            for (let i = 0; i < Math.min(scores.length, 10); i++) {
+                const item = scores[i];
+                const listItem = document.createElement('li');
+                const playerName = item.name.trim().padEnd(20, '.');
+                const scoreStr = item.score.toString().padStart(6, '0');
+                listItem.innerHTML = `${playerName} ${scoreStr}`;
+                blockchainScoresElement.appendChild(listItem);
+            }
+        } catch (error) {
+            console.error('Blockchain read error:', error);
+
+            blockchainScoresElement.innerHTML = `
+            <li class="error-message"> ⚠️ Unable to Fetch Scores ⚠️ </li>
+        `;
+            // Blockchain okunamıyorsa localStorage'dan yükle
+            loadLocalScores();
+        }
+    } else {
+        // Eğer kontrat yoksa, localStorage'dan yükle
+        loadLocalScores();
+    }
+}
+
+
+function displayLocalScores() {
+    const localScoresElement = document.getElementById("localScores");
+    localScoresElement.innerHTML = '';  // önceki skorları temizle
+
+    const localScores = JSON.parse(localStorage.getItem('scores')) || [];
     
-    const jsonData = JSON.parse(localStorage.getItem('ScoreList')) || [];
+    // LocalScores'u azalan sıraya göre sırala
+    localScores.sort((a, b) => b.score - a.score);
+
+    // İlk 10 skoru listele
+    for (let i = 0; i < Math.min(localScores.length, 10); i++) {
+        const item = localScores[i];
+        const listItem = document.createElement('li');
+        const playerName = item.name.trim().padEnd(20, '.');
+        const scoreStr = item.score.toString().padStart(6, '0');
+        listItem.innerHTML = `${playerName} ${scoreStr}`;
+        localScoresElement.appendChild(listItem);
+    }
+}
+
+
+function saveLocalScore(username, score) {
+    const localScores = JSON.parse(localStorage.getItem('localScores')) || [];
+    localScores.push({ name: username, score: score });
+    localStorage.setItem('localScores', JSON.stringify(localScores));
+}
+
+
+function loadLocalScores() {
+    const jsonData = JSON.parse(localStorage.getItem('localScores')) || [];
     
     for (let i = 0; i < Math.min(jsonData.length, 10); i++) {
         const item = jsonData[i];
         const listItem = document.createElement('li');
-        // Fix score formatting
-        const playerName = item.name.trim().padEnd(10, '.');
+        const playerName = item.name.trim().padEnd(20, '.');
         const scoreStr = item.score.toString().padStart(6, '0');
         listItem.innerHTML = `${playerName}${scoreStr}`;
-        scoreListElement.appendChild(listItem);
+        localScoresElement.appendChild(listItem);
     }
 }
 
-function addHighScore(name, score) {
-    if (!name || name.trim() === '') return; // Skip empty names
+
+async function submitScore(playerName, score) {
+    try {
+        try {
+            // Blockchain işlemini timeout ile sarıyoruz
+            const txPromise = contract.submitScore(playerName, score);
     
-    const scoreNum = parseInt(score, 10);
-    let jsonData = JSON.parse(localStorage.getItem('ScoreList')) || [];
+            // 10 saniyede cevap gelmezse timeout
+            const tx = await Promise.race([
+                txPromise,
+                new Promise((_, reject) => setTimeout(() => reject(new Error('Blockchain timeout')), 10000))
+            ]);
     
-    // Clean up existing data - remove empty names
-    jsonData = jsonData.filter(item => item.name && item.name.trim() !== '');
-    
-    // Check if score already exists for this name
-    const existingIndex = jsonData.findIndex(item => item.name === name);
-    if (existingIndex !== -1) {
-        // Update score if new score is higher
-        if (scoreNum > jsonData[existingIndex].score) {
-            jsonData[existingIndex].score = scoreNum;
-            submitToBlockchain(name, scoreNum);
+            await tx.wait(); // İşlemi bekle
+            console.log('Score submitted to blockchain!');
+        } catch (error) {
+            console.error('Blockchain error, proceeding with local save:', error);
         }
-    } else {
-        // Add new score
-        jsonData.push({ name, score: scoreNum });
-        submitToBlockchain(name, scoreNum);
+
+        // Skoru localStorage'a kaydet
+        let localScores = JSON.parse(localStorage.getItem('scores')) || [];
+        localScores.push({ name: playerName, score: score });
+        localStorage.setItem('scores', JSON.stringify(localScores));
+
+        // Güncel skorları göster
+        await displayBlockchainScores();
+        displayLocalScores();
+
+    } catch (error) {
+        console.error('Error submitting score:', error);
     }
-    
-    // Sort and keep only top 10
-    jsonData.sort((a, b) => b.score - a.score);
-    if (jsonData.length > 10) {
-        jsonData.length = 10;
-    }
-    
-    localStorage.setItem('ScoreList', JSON.stringify(jsonData));
-    displayHighScores();
 }
+
+
 
 // Game State Handle
 
@@ -160,7 +284,7 @@ function finalizeGameOver() {
     const playerName = nameInputElement.value.trim().toUpperCase();
 
     if (playerName) {
-        addHighScore(playerName, finalScore);
+        submitScore(playerName, finalScore);
     }
 
     gameContainer.style.display = 'none';
@@ -205,14 +329,17 @@ function startGameLoop() {
     requestAnimationFrame(gameLoop);
 }
 
-function init() {
+async function init() {
     // Set canvas dimensions
     canvas.width = GAME_WIDTH;
     canvas.height = GAME_HEIGHT;
-    
+    initializeBlockchain();
+
     // Display high scores
-    displayHighScores();
-    
+    displayBlockchainScores();
+    displayLocalScores();
+
+
     // Add event listener to start button
     startButtonElement.addEventListener('click', () => {
         const playerName = nameInputElement.value.trim();

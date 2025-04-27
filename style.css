@@ -31,14 +31,14 @@ h2 {
     color: white;
 }
 
-#scoreList {
+#blockchainScores {
     margin: 20px;
     list-style-position: inside;
     padding: 0;
-    width: 400px;
+    width: 600px;
 }
 
-#scoreList li {
+#blockchainScores li {
     font-family: "Press Start 2P";
     font-size: 20px;
     color: white;
@@ -46,6 +46,20 @@ h2 {
     white-space: pre;
 }
 
+#localScores {
+    margin: 20px;
+    list-style-position: inside;
+    padding: 0;
+    width: 600px;
+}
+
+#localScores li {
+    font-family: "Press Start 2P";
+    font-size: 20px;
+    color: white;
+    margin: 10px 0;
+    white-space: pre;
+}
 .input-container {
     display: flex;
     flex-direction: column;
@@ -217,3 +231,16 @@ h2 {
     animation: shake 0.3s;
 }
 
+.error-message {
+    list-style-type: none; /* Başındaki 1.'i kaldırır */
+    color: #FFD700; /* Sarımsı renk */
+    animation: blink 1.0s infinite;
+    font-weight: bold;
+}
+
+/* Yanıp sönme animasyonu */
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+}

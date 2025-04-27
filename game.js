@@ -15,6 +15,8 @@ let keys = {
     Space: false
 };
 let invadersMoveDownTimer = 0;
+let backgroundImage = new Image();
+backgroundImage.src = 'img/background_cpu.png';
 
 // Input Handle
 window.addEventListener('keydown', ({ key }) => {

@@ -247,15 +247,22 @@ function init() {
     gameContainer.style.display = 'none';
 }
 
-// Game Loop
+// Game Loop - Arka plan resmi ekleniyor
 function gameLoop(currentTime) {
     // Calculate delta time
     const deltaTime = currentTime - lastTime;
     
     // Only update if enough time has passed
     if (deltaTime >= frameTime) {
-        ctx.fillStyle = 'black';
-        ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+        // Arkaplan resmini çiz (temizleme işlemi yerine)
+        if (backgroundImage.complete) {
+            // Resim tamamen yüklendiğinde çiz
+            ctx.drawImage(backgroundImage, 0, 0, GAME_WIDTH, GAME_HEIGHT);
+        } else {
+            // Resim henüz yüklenmediyse siyah arka plan kullan
+            ctx.fillStyle = 'black';
+            ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+        }
         
         if (gameRunning) {
             if (keys.Left) {
@@ -309,4 +316,3 @@ mainMenuButtonElement.addEventListener('click', () => {
     gameOverContainer.style.display = 'none';
     startContainer.style.display = 'flex';
 });
-

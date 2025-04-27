@@ -12,15 +12,20 @@
 <body>
     <div class="start-container">
         <h1>SPACE INVADERS</h1>
-        <h2>HIGH SCORES</h2>
-        <ol id="scoreList"></ol>
+        
+        <h2>BLOCKCHAIN HIGH SCORES</h2>
+        <ol id="blockchainScores"></ol>
+    
+        <h2>LOCAL HIGH SCORES</h2>
+        <ol id="localScores"></ol>
+    
         <div class="input-container">
             <label id="nameLabel" for="nameInput">ENTER NAME</label>
             <input id="nameInput" type="text" minlength="3" maxlength="13" required>
             <div id="nameWarning">⚠️ Name must be at least 3 characters long.</div>
             <button id="startButton" type="button">START</button>
         </div>
-    </div>
+    </div>    
     <div class="game-container">
         <div class="ui-container">
             <div>SCORE: <span id="scoreUI">0</span></div>

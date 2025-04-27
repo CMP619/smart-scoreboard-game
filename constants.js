@@ -63,7 +63,7 @@ const INVADER_CONFIGS = {
         score: 10,
         width: 32,
         height: 32,
-        bulletSize: { width: 4, height: 8 }, // middle bullet
+        bulletSize: { width: 5, height: 10 }, // middle bullet
         fireRate: 0.002, // normal frequency
         bulletSrc: ASSETS.bullet00.src,
         src: ASSETS.invader01.src
@@ -72,7 +72,7 @@ const INVADER_CONFIGS = {
         score: 20,
         width: 32,
         height: 32,
-        bulletSize: { width: 6, height: 12 }, // big bullet
+        bulletSize: { width: 7, height: 14 }, // big bullet
         fireRate: 0.001, // rare frequency
         bulletSrc: ASSETS.bullet00.src,
         src: ASSETS.invader02.src
@@ -81,7 +81,7 @@ const INVADER_CONFIGS = {
         score: 30,
         width: 32,
         height: 32,
-        bulletSize: { width: 2, height: 4 }, // small bullet
+        bulletSize: { width: 3, height: 6 }, // small bullet
         fireRate: 0.003, // rain frequency
         bulletSrc: ASSETS.bullet00.src,
         src: ASSETS.invader03.src
@@ -93,7 +93,7 @@ const PLAYER_CONFIGS = {
         score: 10,
         width: 48,
         height: 48,
-        bulletSize: { width: 4, height: 8 },
+        bulletSize: { width: 5, height: 10 },
         bulletSrc: ASSETS.bullet01.src,
         src: ASSETS.player01.src
     }

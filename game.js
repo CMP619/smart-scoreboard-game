@@ -137,11 +137,15 @@ function updateInvaders() {
         });
     }
     
+    // Her sütundaki en alttaki düşmanları bulalım
+    const bottomInvaders = findBottomInvaders();
+    
     invaders.forEach(invader => {
         invader.velocity.x = INVADER_SPEED * invaderDirection;
         invader.update();
         
-        if (Math.random() < invader.config.fireRate) {
+        // Sadece en alttaki düşmanlar ateş edebilir
+        if (bottomInvaders.includes(invader) && Math.random() < invader.config.fireRate) {
             invader.fire();
         }
     });
@@ -151,6 +155,38 @@ function updateInvaders() {
     }
     
     invadersMoveDownTimer++;
+}
+
+function findBottomInvaders() {
+    const columns = {};
+    
+    // Her invader'ı x pozisyonuna göre sınıflandır
+    invaders.forEach(invader => {
+        // x pozisyonunu yuvarla (aynı sütunda olsalar bile tam olarak aynı x değerine sahip olmayabilirler)
+        const columnX = Math.round(invader.position.x);
+        
+        if (!columns[columnX]) {
+            columns[columnX] = [];
+        }
+        
+        columns[columnX].push(invader);
+    });
+    
+    // Her sütundaki en alttaki (y değeri en büyük olan) invader'ı bul
+    const bottomInvaders = [];
+    
+    Object.values(columns).forEach(columnInvaders => {
+        if (columnInvaders.length > 0) {
+            // y değerine göre sırala ve en büyük olanı al
+            const bottomInvader = columnInvaders.reduce((bottom, current) => {
+                return current.position.y > bottom.position.y ? current : bottom;
+            }, columnInvaders[0]);
+            
+            bottomInvaders.push(bottomInvader);
+        }
+    });
+    
+    return bottomInvaders;
 }
 
 function updateBullets() {

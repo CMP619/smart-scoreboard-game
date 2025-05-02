@@ -135,6 +135,9 @@ function updateInvaders() {
         invaders.forEach(invader => {
             invader.position.y += 20; // Fixed descent amount
         });
+
+        invaderAdvanceSound.currentTime = 0;
+        invaderAdvanceSound.play();
     }
     
     invaders.forEach(invader => {
@@ -165,6 +168,8 @@ function updateBullets() {
         if (!bullet.isEnemy) {
             invaders.forEach(invader => {
                 if (checkCollision(bullet, invader)) {
+                    invaderExplosionSound.currentTime = 0;
+                    invaderExplosionSound.play();
                     bullet.markedForDeletion = true;
                     invader.markedForDeletion = true;
                     score += invader.config.score;
@@ -206,7 +211,10 @@ function loseLife() {
     }
     
     if (lives <= 0) {
+        stopCurrentMusic();
         gameOver();
         return;
-    }       
+    }  
+    
+    playerHitSound.play();
 }

@@ -109,6 +109,8 @@ class Player extends GameObject {
 
     fire() {
         if (this.cooldown <= 0) {
+            playerLaserSound.currentTime = 0;
+            playerLaserSound.play();
             const bullet = new Bullet(
                 this.position.x + (this.width / 2) - (BULLET_WIDTH / 2),
                 this.position.y,
@@ -147,9 +149,16 @@ class Invader extends GameObject {
 
     update() {
         super.update();
+
+        if (this.position.y + this.height + player.height > GAME_HEIGHT) {
+            gameOver();
+        }
     }
 
     fire() {
+        invaderLaserSound.currentTime = 0;
+        invaderLaserSound.play();
+
         const bullet = new Bullet(
             this.position.x + (this.width / 2) - (this.config.bulletSize.width / 2),
             this.position.y + this.height,

@@ -254,32 +254,42 @@ function startGame() {
     localStorage.setItem('Name', nameInputElement.value.toUpperCase());
     localStorage.setItem('Score', '0');
     localStorage.setItem('GameState', '0');
+    playMusic('gameplay'); 
     gameRunning = true;
 }
 
-function gameOver() {
+function gameOver() { 
     showExplosion(() => {
+        gameoverSound.currentTime = 0;
+        gameoverSound.play();
         finalizeGameOver();
     });
 }
 
 function showExplosion(callback) {
+    //playSound('sfx/player_explosion.mp3', 0.8); 
+    playerExplosionSound.currentTime = 0; 
+    playerExplosionSound.play();
+
     Player.visible = false;
     const explosion = document.getElementById('explosionGif');
     explosion.style.display = 'block';
     
     explosion.style.left = `${player.position.x}px`;
     explosion.style.top = `${player.position.y}px`;
-
+  
     gameRunning = false;
 
     setTimeout(() => {
         explosion.style.display = 'none';
         callback(); 
-    }, 1000); 
+    }, 1500); 
 }
 
 function finalizeGameOver() {
+    stopCurrentMusic();
+    document.getElementById('toggleMusicButton').style.display = 'none'; 
+
     const finalScore = score;
     const playerName = nameInputElement.value.trim().toUpperCase();
 
@@ -330,6 +340,11 @@ function startGameLoop() {
 }
 
 async function init() {
+    // Play Main Menu music
+    //mainMenuAmbientMusic.currentTime = 0;
+    //mainMenuAmbientMusic.play();
+    playMusic('menu');
+    
     // Set canvas dimensions
     canvas.width = GAME_WIDTH;
     canvas.height = GAME_HEIGHT;
@@ -429,11 +444,15 @@ playAgainButtonElement.addEventListener('click', () => {
     startGame();
     resetGame();
     startGameLoop();
+    playMusic('gameplay');
+    document.getElementById('toggleMusicButton').style.display = 'inline-block';
 });
 
 mainMenuButtonElement.addEventListener('click', () => {
     nameInputElement.value = '';
     gameOverContainer.style.display = 'none';
     startContainer.style.display = 'flex';
+    playMusic('menu');
+    document.getElementById('toggleMusicButton').style.display = 'inline-block';
 });
 

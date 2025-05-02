@@ -22,10 +22,11 @@
         <div class="input-container">
             <label id="nameLabel" for="nameInput">ENTER NAME</label>
             <input id="nameInput" type="text" minlength="3" maxlength="13" required>
-            <div id="nameWarning">⚠️ Name must be at least 3 characters long.</div>
+            <div id="nameWarning">⚠ Name must be at least 3 characters long.</div>
             <button id="startButton" type="button">START</button>
         </div>
     </div>    
+
     <div class="game-container">
         <div class="ui-container">
             <div>SCORE: <span id="scoreUI">0</span></div>
@@ -45,10 +46,13 @@
             <button id="mainMenuButton">MAIN MENU</button>
         </div>
     </div>    
+    <button id="toggleMusicButton" tabindex="-1" style="position: fixed; top: 20px; right: 20px; z-index: 100;">Music: OFF</button>
+
     
     <script src="constants.js"></script>
     <script src="class.js"></script>
     <script src="game.js"></script>
     <script src="main.js"></script>
+    <script src="audio.js"></script>
 </body>
 </html>

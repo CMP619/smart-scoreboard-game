@@ -46,11 +46,11 @@ class GameObject {
     }
 }
 
-
+// Player sınıfının fire metodunu güncelleyelim
 class Player extends GameObject {
     constructor(imageSrc) {
-        const playerWidth = 64 * MODEL_SCALE;
-        const playerHeight = 32 * MODEL_SCALE;
+        const playerWidth = PLAYER_CONFIGS.player01.width * MODEL_SCALE;
+        const playerHeight = PLAYER_CONFIGS.player01.height * MODEL_SCALE;
         super(
             GAME_WIDTH / 2 - playerWidth / 2,
             GAME_HEIGHT - playerHeight - PLAYER_OFFSET,
@@ -111,10 +111,17 @@ class Player extends GameObject {
         if (this.cooldown <= 0) {
             playerLaserSound.currentTime = 0;
             playerLaserSound.play();
+
+            const bulletConfig = PLAYER_CONFIGS.player01.bulletSize;
+            const bulletWidth = bulletConfig.width;
+            const bulletHeight = bulletConfig.height;
+            
             const bullet = new Bullet(
-                this.position.x + (this.width / 2) - (BULLET_WIDTH / 2),
+                this.position.x + (this.width / 2) - (bulletWidth / 2),
                 this.position.y,
-                0, -BULLET_SPEED
+                0, -BULLET_SPEED,
+                bulletWidth, bulletHeight,
+                PLAYER_CONFIGS.player01.bulletSrc 
             );
             
             bullets.push(bullet);
@@ -164,7 +171,8 @@ class Invader extends GameObject {
             this.position.y + this.height,
             0, BULLET_SPEED,
             this.config.bulletSize.width,
-            this.config.bulletSize.height
+            this.config.bulletSize.height,
+            this.config.bulletSrc // Mermi görselini de config'den al
         );
         
         bullet.isEnemy = true;
@@ -175,17 +183,23 @@ class Invader extends GameObject {
 Invader.lowestY = 0;
 
 class Bullet extends GameObject {
-    constructor(x, y, velocityX, velocityY, width = BULLET_WIDTH, height = BULLET_HEIGHT) {
-        super(x, y, width, height);
+    constructor(x, y, velocityX, velocityY, width = BULLET_WIDTH, height = BULLET_HEIGHT, imageSrc = null) {
+        // Eğer imageSrc verilmemişse, düşman mermisi mi yoksa oyuncu mermisi mi olduğuna göre belirle
+        const bulletSrc = imageSrc || (velocityY > 0 ? ASSETS.bullet00.src : ASSETS.bullet01.src);
+        super(x, y, width, height, bulletSrc);
         this.velocity.x = velocityX;
         this.velocity.y = velocityY;
-        this.isEnemy = false;
+        this.isEnemy = velocityY > 0;
     }
 
     draw() {
         if (!Player.visible) return;
-        ctx.fillStyle = this.isEnemy ? 'lime' : 'white';
-        ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
+        if (this.image && this.imageLoaded) {
+            ctx.drawImage(this.image, this.position.x, this.position.y, this.width, this.height);
+        } else {
+            ctx.fillStyle = this.isEnemy ? 'lime' : 'white';
+            ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
+        }
     }
 
     update() {

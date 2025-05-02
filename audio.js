@@ -1,15 +1,15 @@
-let musicPlaying = true;
+let musicPlaying = false;
 let currentMusic = null;
 let lastMusicType = 'menu'; 
 
 
 let mainMenuAmbientMusic = new Audio('sfx/mainmenu_ambient_edited.mp3');
-mainMenuAmbientMusic.volume = 1.0;
+mainMenuAmbientMusic.volume = 0.7;
 mainMenuAmbientMusic.preload = 'auto';
 mainMenuAmbientMusic.loop = true;
 
 let gameplayMusic = new Audio('sfx/gameplay_music.mp3');
-gameplayMusic.volume = 0.6;
+gameplayMusic.volume = 0.5;
 gameplayMusic.preload = 'auto';
 gameplayMusic.loop = true;
 
@@ -25,17 +25,23 @@ let playerLaserSound = new Audio('sfx/player_laser_normal.mp3');
 playerLaserSound.volume = 1.0;
 playerLaserSound.preload = 'auto';
 
+let playerHitSound = new Audio('sfx/player_hit.mp3');
+playerHitSound.volume = 1.0;
+playerHitSound.preload = 'auto';
+
 let invaderLaserSound = new Audio('sfx/invader_laser.mp3');
 invaderLaserSound.volume = 0.3;
 invaderLaserSound.preload = 'auto';
 
 let invaderExplosionSound = new Audio('sfx/invader_explosion.mp3');
-invaderExplosionSound.volume = 0.6;
+invaderExplosionSound.volume = 0.3;
 invaderExplosionSound.preload = 'auto';
 
 let invaderAdvanceSound = new Audio('sfx/invader_advance.mp3');
-invaderAdvanceSound.volume = 1.0;
+invaderAdvanceSound.volume = 0.7;
 invaderAdvanceSound.preload = 'auto';
+
+
 
 function stopCurrentMusic() {
     if (currentMusic) {

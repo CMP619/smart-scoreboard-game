@@ -214,5 +214,7 @@ function loseLife() {
         stopCurrentMusic();
         gameOver();
         return;
-    }       
+    }  
+    
+    playerHitSound.play();
 }

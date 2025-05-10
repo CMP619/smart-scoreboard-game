@@ -124,6 +124,8 @@ function finalizeGameOver() {
 function resetGame() {
     score = 0;
     lives = 3;
+    waveCount = 1;
+    Player.shouldBeDead = false;
     Player.visible = true;
     Invader.lowestY = 0;
     gameRunning = true;

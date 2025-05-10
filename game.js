@@ -70,6 +70,7 @@ function checkCollision(obj1, obj2) {
 
 // Game Logic
 function createInvaders() {
+    bullets = [];
     invaders = [];
     const invaderTypes = [
         { type: 'invader01', rows: 2 },
@@ -84,6 +85,8 @@ function createInvaders() {
         
         for (let row = 0; row < rows; row++) {
             for (let col = 0; col < INVADER_PER_ROW; col++) {
+                invaderCount++;
+
                 const invaderWidth = config.width * MODEL_SCALE;
                 const invaderHeight = config.height * MODEL_SCALE;
                 const x = col * (invaderWidth + INVADER_PADDING) + 50;
@@ -94,7 +97,6 @@ function createInvaders() {
         }
         yOffset += (config.height * MODEL_SCALE + INVADER_PADDING) * rows + 10;
     }
-    
     invaderDirection = 1;
 }
 
@@ -102,10 +104,6 @@ let waveCount = 1;
 function updateInvaders() {
     if (!gameRunning) return;
     
-    if (invaders.length === 0) {
-        createInvaders();
-        waveCount++;
-    }
     let reachedEdge = false;
     let currentLowestY = 0;
     
@@ -214,12 +212,12 @@ function updateBullets() {
         if (!bullet.isEnemy) {
             invaders.forEach(invader => {
                 if (checkCollision(bullet, invader)) {
-                    invaderExplosionSound.currentTime = 0;
-                    invaderExplosionSound.play();
                     bullet.markedForDeletion = true;
                     invader.markedForDeletion = true;
                     score += invader.config.score;
                     scoreElement.textContent = score;
+                    invaderExplosionSound.currentTime = 0;
+                    invaderExplosionSound.play();
                 }
             });
         } else {
@@ -233,6 +231,11 @@ function updateBullets() {
     // Remove marked bullets and invaders
     bullets = bullets.filter(bullet => !bullet.markedForDeletion);
     invaders = invaders.filter(invader => !invader.markedForDeletion);
+
+    if (invaders.length === 0) {
+        createInvaders();
+        waveCount++;
+    }
 }
 
 function loseLife() {

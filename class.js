@@ -69,6 +69,10 @@ class Player extends GameObject {
     update() {
         super.update();
             
+        if (Player.shouldBeDead)
+        {
+            gameOver();
+        }
         const verticalBuffer = 10; 
         this.upperLimitY = Invader.lowestY + verticalBuffer;
     
@@ -138,6 +142,7 @@ class Player extends GameObject {
     }
 }
 Player.visible = true;
+Player.shouldBeDead = false;
 
 class Invader extends GameObject {
     constructor(x, y, type) {
@@ -158,7 +163,7 @@ class Invader extends GameObject {
         super.update();
 
         if (this.position.y + this.height + player.height > GAME_HEIGHT) {
-            gameOver();
+            Player.shouldBeDead = true;
         }
     }
 

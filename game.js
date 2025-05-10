@@ -98,9 +98,14 @@ function createInvaders() {
     invaderDirection = 1;
 }
 
+let waveCount = 1;
 function updateInvaders() {
     if (!gameRunning) return;
     
+    if (invaders.length === 0) {
+        createInvaders();
+        waveCount++;
+    }
     let reachedEdge = false;
     let currentLowestY = 0;
     
@@ -146,13 +151,16 @@ function updateInvaders() {
     const bottomInvaders = findBottomInvaders();
     
     invaders.forEach(invader => {
-        invader.velocity.x = INVADER_SPEED * invaderDirection;
+        invader.velocity.x = INVADER_SPEED * invaderDirection * Math.sqrt(waveCount);
         invader.update();
-        
+             
+        let fireChance = invader.config.fireRate * (1 + 0.1 * Math.sqrt(waveCount));
+        fireChance = Math.min(fireChance, 0.05); // üst sınır
         // Sadece en alttaki düşmanlar ateş edebilir
-        if (bottomInvaders.includes(invader) && Math.random() < invader.config.fireRate) {
+        if (bottomInvaders.includes(invader) && Math.random() < fireChance) {
             invader.fire();
         }
+
     });
     
     if (invadersDescending && invadersMoveDownTimer > 5) {
@@ -225,10 +233,6 @@ function updateBullets() {
     // Remove marked bullets and invaders
     bullets = bullets.filter(bullet => !bullet.markedForDeletion);
     invaders = invaders.filter(invader => !invader.markedForDeletion);
-    
-    if (invaders.length === 0) {
-        createInvaders();
-    }
 }
 
 function loseLife() {

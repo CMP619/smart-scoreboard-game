@@ -87,13 +87,18 @@ const contractABI = [
     }
 ];
 
-const contractAddress = '0x87e915B7E9eD3B79815cef2844B59608e231C7db';  // Our contract address
+const contractAddress = '0x2e24A8c1d3e5DCfaE572C1036473223e8435837A';  // Our contract address
 
 let provider, signer, contract;
 
 async function initializeBlockchain() {
+    if (typeof window.ethereum === 'undefined') {
+    alert("MetaMask is not installed! Please install it to connect to the blockchain.");
+    return;
+    }
     try {
-        provider = new ethers.providers.JsonRpcProvider('http://localhost:7545');
+        provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+        await provider.send("eth_requestAccounts", []);
         signer = provider.getSigner(0);
         contract = new ethers.Contract(contractAddress, contractABI, signer);
         console.log('Blockchain objects initialized.');
@@ -144,6 +149,7 @@ async function displayBlockchainScores() {
         }
     } else {
         // Eğer kontrat yoksa, localStorage'dan yükle
+        console.log("contract error");
         loadLocalScores();
     }
 }

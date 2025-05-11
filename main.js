@@ -21,6 +21,9 @@ let lastTime = 0;
 const FPS = 60;
 const frameTime = 1000 / FPS;
 
+let shakeTimer = 0;
+let shakeMagnitude = 10;
+
 function displayLocalScores() {
     const localScoresElement = document.getElementById("localScores");
     localScoresElement.innerHTML = '';  // önceki skorları temizle
@@ -209,6 +212,15 @@ function gameLoop(currentTime) {
     
     // Only update if enough time has passed
     if (deltaTime >= frameTime) {
+        ctx.save();
+
+        if (shakeTimer > 0) {
+            const dx = (Math.random() - 0.5) * shakeMagnitude;
+            const dy = (Math.random() - 0.5) * shakeMagnitude;
+            ctx.translate(dx, dy);
+            shakeTimer--;
+        }
+
         // Arkaplan resmini çiz (temizleme işlemi yerine)
         if (backgroundImage.complete) {
             // Resim tamamen yüklendiğinde çiz
@@ -250,6 +262,8 @@ function gameLoop(currentTime) {
         invaders.forEach(invader => invader.draw());
         bullets.forEach(bullet => bullet.draw());
         
+        ctx.restore()
+
         lastTime = currentTime;
     }
     

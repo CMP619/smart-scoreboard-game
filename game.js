@@ -259,6 +259,7 @@ function updateBullets() {
 function loseLife() {
     
     if(!player.invulnerable) {
+        shakeTimer = 10; 
         lives--;
         livesElement.textContent = lives;
 

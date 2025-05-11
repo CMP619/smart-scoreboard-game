@@ -25,6 +25,11 @@ let powerUpTimers = {
     dual: 0
 };
 
+let powerUpSpawnTimers = {
+    overclock: 0,
+    dual: 0
+};
+
 let keys = {
     Left: false,
     Right: false,
@@ -242,12 +247,14 @@ function updateBullets() {
                     score += invader.config.score;
                     scoreElement.textContent = score;
 
-                    if (Math.random() < 0.05 && !activePowerUps.overclock && !playerPowerUpState.overclock) {
+                    if (Math.random() < 0.05 && !activePowerUps.overclock && !playerPowerUpState.overclock && powerUpSpawnTimers.overclock == 0) {
                         powerUps.push(new PowerUp(invader.position.x, invader.position.y, PowerUpTypes.OVERCLOCK));
                         activePowerUps.overclock = true;
-                    } else if (Math.random() < 0.03 && !activePowerUps.dual && !playerPowerUpState.dual) {
+                        powerUpSpawnTimers.overclock = 25;
+                    } else if (Math.random() < 0.03 && !activePowerUps.dual && !playerPowerUpState.dual && powerUpSpawnTimers.dual == 0)  {
                         powerUps.push(new PowerUp(invader.position.x, invader.position.y, PowerUpTypes.DUAL_BIT));
                         activePowerUps.dual = true;
+                        powerUpSpawnTimers.dual = 20;
                     }
                     
                     explosions.push(new Explosion(

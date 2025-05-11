@@ -143,6 +143,8 @@ function resetGame() {
     powerUpTimers.overclock = 0;
     powerUpTimers.dual = 0;
 
+    powerUpSpawnTimers.overclock = 0;
+    powerUpSpawnTimers.dual = 0 
     // Update UI
     scoreElement.textContent = score;
     livesElement.textContent = lives;
@@ -267,11 +269,19 @@ function gameLoop(currentTime) {
                 if (playerPowerUpState[type]) {
                     powerUpTimers[type]--;
                     if (powerUpTimers[type] <= 0) {
-                        playerPowerUpState[type] = false;
+                        playerPowerUpState[type] = false;        
                     }
                 }
             }            
             
+            for (let type in powerUpSpawnTimers) {
+                if (powerUpSpawnTimers[type] > 0){
+                    powerUpSpawnTimers[type]--;
+                } else {
+                    powerUpSpawnTimers[type] = 0;
+                }
+            }
+
             player.update();
             updateInvaders();
             updateBullets();
@@ -285,9 +295,7 @@ function gameLoop(currentTime) {
         player.draw();
         invaders.forEach(invader => invader.draw());
         bullets.forEach(bullet => bullet.draw());
-        powerUps.forEach(p => p.draw());
-       
-
+        powerUps.forEach(p => p.draw());    
         ctx.restore()
 
         lastTime = currentTime;

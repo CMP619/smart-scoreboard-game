@@ -278,14 +278,11 @@ class PowerUp extends GameObject {
         if (this.position.y > GAME_HEIGHT) {
             this.markedForDeletion = true;
             activePowerUps[this.type] = false;
-            //isPowerUpSpawned = false;
         }
 
         if (checkCollision(this, player)) {
             this.markedForDeletion = true;
             activatePowerUp(this.type); 
-            //powerUpSound.currentTime = 0;
-            //powerUpSound.play();
         }
     }
 }

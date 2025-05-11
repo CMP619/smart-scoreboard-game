@@ -91,6 +91,9 @@ const contractAddress = '0x87e915B7E9eD3B79815cef2844B59608e231C7db';  // Our co
 
 let provider, signer, contract;
 
+provider = new ethers.providers.JsonRpcProvider('http://localhost:7545');
+contract = new ethers.Contract(contractAddress, contractABI, signer);
+
 async function initializeBlockchain() {
     try {
         provider = new ethers.providers.JsonRpcProvider('http://localhost:7545');
@@ -148,6 +151,7 @@ async function displayBlockchainScores() {
     }
 }
 
+/*
 async function submitScore(playerName, score) {
     try {
         try {
@@ -177,5 +181,22 @@ async function submitScore(playerName, score) {
 
     } catch (error) {
         console.error('Error submitting score:', error);
+    }
+}*/
+
+async function submitScore(username, score) {
+    try {
+        const response = await fetch("http://localhost:3000/submit-score", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, score })
+        });
+
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "Unknown error");
+
+        console.log("Skor başarıyla gönderildi:", result);
+    } catch (err) {
+        console.error("Skor gönderimi başarısız:", err);
     }
 }

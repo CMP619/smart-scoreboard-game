@@ -85,7 +85,6 @@ function createInvaders() {
         
         for (let row = 0; row < rows; row++) {
             for (let col = 0; col < INVADER_PER_ROW; col++) {
-                invaderCount++;
 
                 const invaderWidth = config.width * MODEL_SCALE;
                 const invaderHeight = config.height * MODEL_SCALE;

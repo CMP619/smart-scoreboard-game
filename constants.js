@@ -16,6 +16,11 @@ const PLAYER_COOLDOWN = 15;
 const EXPLOSION_FRAME_COUNT = 6;
 const EXPLOSION_FRAME_DURATION = 5; 
 
+const PowerUpTypes = {
+    OVERCLOCK: 'overclock',
+    DUAL_BIT: 'dual'
+};
+
 // Asset Configuration
 const ASSETS = {
     player01: {

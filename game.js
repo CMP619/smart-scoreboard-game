@@ -8,6 +8,23 @@ let player = null;
 let invaders = [];
 let bullets = [];
 let explosions = [];
+
+let powerUps = [];
+let activePowerUps = {
+    overclock: false,
+    dual: false
+};
+
+let playerPowerUpState = {
+    overclock: false,
+    dual: false
+};
+
+let powerUpTimers = {
+    overclock: 0,
+    dual: 0
+};
+
 let keys = {
     Left: false,
     Right: false,
@@ -225,6 +242,14 @@ function updateBullets() {
                     score += invader.config.score;
                     scoreElement.textContent = score;
 
+                    if (Math.random() < 0.05 && !activePowerUps.overclock && !playerPowerUpState.overclock) {
+                        powerUps.push(new PowerUp(invader.position.x, invader.position.y, PowerUpTypes.OVERCLOCK));
+                        activePowerUps.overclock = true;
+                    } else if (Math.random() < 0.03 && !activePowerUps.dual && !playerPowerUpState.dual) {
+                        powerUps.push(new PowerUp(invader.position.x, invader.position.y, PowerUpTypes.DUAL_BIT));
+                        activePowerUps.dual = true;
+                    }
+                    
                     explosions.push(new Explosion(
                         invader.position.x,
                         invader.position.y,
@@ -251,9 +276,7 @@ function updateBullets() {
     if (invaders.length === 0) {
         createInvaders();
         waveCount++;
-    }
-
-    
+    }  
 }
 
 function loseLife() {
@@ -281,4 +304,19 @@ function loseLife() {
     }  
     
     playerHitSound.play();
+}
+
+function activatePowerUp(type) {
+    playerPowerUpState[type] = true;
+    powerUpTimers[type] = 300;
+    activePowerUps[type] = false; 
+
+    if(type === PowerUpTypes.OVERCLOCK) {
+        powerupOverclockSound.currentTime = 0;
+        powerupOverclockSound.play();
+    } else {
+        powerupDualSound.currentTime = 0;
+        powerupDualSound.play();
+    }
+        
 }

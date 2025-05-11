@@ -34,7 +34,7 @@ function displayLocalScores() {
     localScores.sort((a, b) => b.score - a.score);
 
     // İlk 10 skoru listele
-    for (let i = 0; i < Math.min(localScores.length, 10); i++) {
+    for (let i = 0; i < Math.min(localScores.length, 5); i++) {
         const item = localScores[i];
         const listItem = document.createElement('li');
         const playerName = item.name.trim().padEnd(20, '.');
@@ -133,6 +133,16 @@ function resetGame() {
     Invader.lowestY = 0;
     gameRunning = true;
     
+    powerUps = [];
+    activePowerUps.overclock = false;
+    activePowerUps.dual = false;
+  
+    playerPowerUpState.overclock = false;
+    playerPowerUpState.dual = false;
+
+    powerUpTimers.overclock = 0;
+    powerUpTimers.dual = 0;
+
     // Update UI
     scoreElement.textContent = score;
     livesElement.textContent = lives;
@@ -252,16 +262,32 @@ function gameLoop(currentTime) {
             if(keys.Space) {
                 player.fire();
             }
+
+            for (let type in powerUpTimers) {
+                if (playerPowerUpState[type]) {
+                    powerUpTimers[type]--;
+                    if (powerUpTimers[type] <= 0) {
+                        playerPowerUpState[type] = false;
+                    }
+                }
+            }            
             
             player.update();
             updateInvaders();
             updateBullets();
-        }
-        
+
+            powerUps.forEach(p => p.update());
+            powerUps = powerUps.filter(p => !p.markedForDeletion);
+
+            updatePowerUpHUD();
+        }  
+          
         player.draw();
         invaders.forEach(invader => invader.draw());
         bullets.forEach(bullet => bullet.draw());
-        
+        powerUps.forEach(p => p.draw());
+       
+
         ctx.restore()
 
         lastTime = currentTime;
@@ -293,4 +319,23 @@ mainMenuButtonElement.addEventListener('click', () => {
     playMusic('menu');
     document.getElementById('toggleMusicButton').style.display = 'inline-block';
 });
+
+function updatePowerUpHUD() {
+    const hud = document.getElementById("powerUpHUD");
+    const overclock = playerPowerUpState.overclock;
+    const dual = playerPowerUpState.dual;
+
+    if (overclock && dual) {
+        hud.textContent = "OVERCLOCKED + DUAL OUTPUT!";
+        hud.style.color = "lime";
+    } else if (overclock) {
+        hud.textContent = "OVERCLOCKED!";
+        hud.style.color = "orange";
+    } else if (dual) {
+        hud.textContent = "DUAL BIT MODE!";
+        hud.style.color = "cyan";
+    } else {
+        hud.textContent = "";
+    }
+}
 

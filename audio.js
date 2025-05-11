@@ -41,7 +41,13 @@ let invaderAdvanceSound = new Audio('sfx/invader_advance.mp3');
 invaderAdvanceSound.volume = 0.7;
 invaderAdvanceSound.preload = 'auto';
 
+let powerupOverclockSound = new Audio('sfx/powerup_overclock.mp3');
+powerupOverclockSound.volume = 1.0;
+powerupOverclockSound.preload = 'auto';
 
+let powerupDualSound = new Audio('sfx/powerup_dual.mp3');
+powerupDualSound.volume = 0.7;
+powerupDualSound.preload = 'auto';
 
 function stopCurrentMusic() {
     if (currentMusic) {

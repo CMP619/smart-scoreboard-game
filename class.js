@@ -119,17 +119,26 @@ class Player extends GameObject {
             const bulletConfig = PLAYER_CONFIGS.player01.bulletSize;
             const bulletWidth = bulletConfig.width;
             const bulletHeight = bulletConfig.height;
+
+            const isDual = playerPowerUpState.dual;
+            const isOverclock = playerPowerUpState.overclock;
+
+            const finalCooldown = isOverclock ? 5 : PLAYER_COOLDOWN;
+            this.cooldown = finalCooldown;
+
+            const midX = this.position.x + this.width / 2;
             
-            const bullet = new Bullet(
-                this.position.x + (this.width / 2) - (bulletWidth / 2),
-                this.position.y,
-                0, -BULLET_SPEED,
-                bulletWidth, bulletHeight,
-                PLAYER_CONFIGS.player01.bulletSrc 
-            );
-            
-            bullets.push(bullet);
-            this.cooldown = PLAYER_COOLDOWN;
+            if (isDual) {
+                const offset = 10;
+                bullets.push(new Bullet(midX - offset, this.position.y, 0, -BULLET_SPEED, bulletWidth, bulletHeight,
+                    PLAYER_CONFIGS.player01.bulletSrc));
+                bullets.push(new Bullet(midX + offset - BULLET_WIDTH, this.position.y, 0, -BULLET_SPEED, bulletWidth, bulletHeight,
+                    PLAYER_CONFIGS.player01.bulletSrc ));
+            } else {
+                bullets.push(new Bullet(midX - BULLET_WIDTH / 2, this.position.y, 0, -BULLET_SPEED,bulletWidth, bulletHeight,
+                PLAYER_CONFIGS.player01.bulletSrc));                   
+            }
+
         }
     }
 
@@ -251,4 +260,34 @@ class Explosion extends GameObject {
         return this.frameIndex >= Explosion.frames.length;
     }
 }
+
+class PowerUp extends GameObject {
+    constructor(x, y, type) {
+        const imageSrc = type === PowerUpTypes.OVERCLOCK ? 'img/powerup_overclock.png' : 'img/powerup_dual.png';
+        const width = type === PowerUpTypes.OVERCLOCK ? 36 : 24;
+        const height = 36;
+        super(x, y, width, height, imageSrc); 
+        this.velocity.y = 2 * Math.sqrt(waveCount); 
+        this.markedForDeletion = false;
+        this.type = type;
+    }
+
+    update() {
+        super.update();
+
+        if (this.position.y > GAME_HEIGHT) {
+            this.markedForDeletion = true;
+            activePowerUps[this.type] = false;
+            //isPowerUpSpawned = false;
+        }
+
+        if (checkCollision(this, player)) {
+            this.markedForDeletion = true;
+            activatePowerUp(this.type); 
+            //powerUpSound.currentTime = 0;
+            //powerUpSound.play();
+        }
+    }
+}
+
 

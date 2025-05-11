@@ -211,3 +211,22 @@ class Bullet extends GameObject {
         super.update();
     }
 }
+
+class Explosion extends GameObject {
+    constructor(x, y, width, height, velocityX = 0, velocityY = 0, imageSrc = 'img/explosion_invader.gif') {
+        super(x, y, width, height, imageSrc);
+        this.timer = 0;
+        this.duration = 30; // ~0.5s
+    }
+
+    update(invaderDirection, isDescending) {
+        this.position.x += INVADER_SPEED * invaderDirection * Math.sqrt(waveCount);
+        this.timer++;
+    }
+
+
+    isExpired() {
+        return this.timer > this.duration;
+    }
+}
+

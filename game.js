@@ -7,6 +7,7 @@ let invadersDescending = false;
 let player = null;
 let invaders = [];
 let bullets = [];
+let explosions = [];
 let keys = {
     Left: false,
     Right: false,
@@ -85,8 +86,6 @@ function createInvaders() {
         
         for (let row = 0; row < rows; row++) {
             for (let col = 0; col < INVADER_PER_ROW; col++) {
-                invaderCount++;
-
                 const invaderWidth = config.width * MODEL_SCALE;
                 const invaderHeight = config.height * MODEL_SCALE;
                 const x = col * (invaderWidth + INVADER_PADDING) + 50;
@@ -116,7 +115,6 @@ function updateInvaders() {
         if(checkCollision(invader,player))
         {
             loseLife();
-            //gameOver();
             return;
         }
 
@@ -140,6 +138,10 @@ function updateInvaders() {
         invaders.forEach(invader => {
             invader.position.y += 20; // Fixed descent amount
         });
+
+        explosions.forEach(explosion => {
+            explosion.position.y += 20;
+        })
 
         invaderAdvanceSound.currentTime = 0;
         invaderAdvanceSound.play();
@@ -166,6 +168,12 @@ function updateInvaders() {
     }
     
     invadersMoveDownTimer++;
+
+    explosions.forEach(explosion => {
+        explosion.update(invaderDirection, invadersDescending);
+        explosion.draw();
+    });
+    explosions = explosions.filter(e => !e.isExpired());
 }
 
 function findBottomInvaders() {
@@ -216,6 +224,14 @@ function updateBullets() {
                     invader.markedForDeletion = true;
                     score += invader.config.score;
                     scoreElement.textContent = score;
+
+                    explosions.push(new Explosion(
+                        invader.position.x,
+                        invader.position.y,
+                        invader.width * 1.2, 
+                        invader.height * 1.2,
+                    ));
+                    
                     invaderExplosionSound.currentTime = 0;
                     invaderExplosionSound.play();
                 }
@@ -236,6 +252,8 @@ function updateBullets() {
         createInvaders();
         waveCount++;
     }
+
+    
 }
 
 function loseLife() {

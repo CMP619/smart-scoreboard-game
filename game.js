@@ -170,7 +170,7 @@ function updateInvaders() {
     invadersMoveDownTimer++;
 
     explosions.forEach(explosion => {
-        explosion.update(invaderDirection, invadersDescending);
+        explosion.update();
         explosion.draw();
     });
     explosions = explosions.filter(e => !e.isExpired());

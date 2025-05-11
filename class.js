@@ -213,20 +213,42 @@ class Bullet extends GameObject {
 }
 
 class Explosion extends GameObject {
-    constructor(x, y, width, height, velocityX = 0, velocityY = 0, imageSrc = 'img/explosion_invader.gif') {
-        super(x, y, width, height, imageSrc);
-        this.timer = 0;
-        this.duration = 30; // ~0.5s
+    static frames = [];
+
+    static loadFrames() {
+        for (let i = 0; i < EXPLOSION_FRAME_COUNT; i++) {
+            const img = new Image();
+            img.src = `img/explosion_invader_${i}.gif`;
+            Explosion.frames.push(img);
+        }
     }
 
-    update(invaderDirection, isDescending) {
+    constructor(x, y, width, height) {
+        super(x, y, width, height);
+        this.frameIndex = 0;
+        this.frameTimer = 0;
+    }    
+    
+
+    update() {
         this.position.x += INVADER_SPEED * invaderDirection * Math.sqrt(waveCount);
-        this.timer++;
+
+        this.frameTimer++;
+        if (this.frameTimer % EXPLOSION_FRAME_DURATION === 0) {
+            this.frameIndex++;
+        }
     }
 
+
+    draw() {
+        const frame = Explosion.frames[this.frameIndex];
+        if (frame && frame.complete) {
+            ctx.drawImage(frame, this.position.x, this.position.y, this.width, this.height);
+        }
+    }
 
     isExpired() {
-        return this.timer > this.duration;
+        return this.frameIndex >= Explosion.frames.length;
     }
 }
 

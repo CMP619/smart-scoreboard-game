@@ -256,7 +256,10 @@ function gameLoop(currentTime) {
     requestAnimationFrame(gameLoop);
 }
 
-window.addEventListener('DOMContentLoaded', init);
+window.addEventListener('DOMContentLoaded',()=>{
+    Explosion.loadFrames();
+    init();
+});
 
 playAgainButtonElement.addEventListener('click', () => {
     gameOverContainer.style.display = 'none';

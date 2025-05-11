@@ -13,6 +13,8 @@ const BULLET_HEIGHT = 10;
 const BULLET_SPEED = 5;
 const INVADER_FIRE_RATE = 0.001;
 const PLAYER_COOLDOWN = 15;
+const EXPLOSION_FRAME_COUNT = 6;
+const EXPLOSION_FRAME_DURATION = 5; 
 
 // Asset Configuration
 const ASSETS = {

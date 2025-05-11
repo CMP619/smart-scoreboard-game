@@ -161,7 +161,7 @@ async function init() {
     // Set canvas dimensions
     canvas.width = GAME_WIDTH;
     canvas.height = GAME_HEIGHT;
-    initializeBlockchain();
+    await initializeBlockchain();
 
     // Display high scores
     displayBlockchainScores();
